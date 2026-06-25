@@ -1,0 +1,1138 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AVC • Generating Unit Data Analysis</title>
+    
+    <script>
+        window.onerror = function(msg, url, line) {
+            const log = document.getElementById('debug-log');
+            if(log) log.innerHTML = `<span class="text-red-500 font-bold">SYS_ERROR (Line ${line}): ${msg}</span>`;
+        };
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <style>
+        :root {
+            --bg-base: #0a0e17; --bg-panel: #111827; --border-color: #1f2937;
+            --text-main: #f3f4f6; --text-muted: #9ca3af; --accent-blue: #3b82f6;
+        }
+        body { background-color: var(--bg-base); color: var(--text-main); font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+        
+        .panel { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 6px; }
+        
+        .tree-header { padding: 12px 14px; font-size: 11px; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.05em; background: #1f2937; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3b82f6; cursor: pointer; transition: 0.2s;}
+        .tree-header:hover { background: #374151; }
+        .tree-group-lvl-2 { font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase; padding: 12px 14px 4px 20px; letter-spacing: 1px; display: flex; justify-content: space-between;}
+        .tree-item { cursor: pointer; padding: 8px 12px 8px 24px; font-size: 13px; color: #d1d5db; border-left: 3px solid transparent; transition: all 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .tree-item:hover { background: rgba(59, 130, 246, 0.1); color: #93c5fd; }
+        .tree-item.active { background: rgba(59, 130, 246, 0.15); color: #ffffff; border-left-color: var(--accent-blue); font-weight: 600; }
+        
+        .kpi-value { font-family: 'Courier New', Courier, monospace; font-weight: 700; letter-spacing: -0.5px; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.8; transition: 0.2s; }
+        input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+        select option { background-color: #1f2937; color: #ffffff; font-weight: bold; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden relative">
+
+    <header class="bg-[#111827] border-b border-[#1f2937] p-3 flex justify-between items-center shrink-0 z-20">
+        <div class="flex items-center gap-3">
+            <img src="https://lh3.googleusercontent.com/d/1XCl2AoNcouyrJC0Ht5bZtmZnghkzQE4G" alt="Company Logo" class="h-11 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
+            <div>
+                <h1 class="font-bold text-white text-sm tracking-wide uppercase">GENERATING UNIT DATA ANALYSIS</h1>
+                <div class="text-[10px] text-gray-400 uppercase tracking-widest">Asset Performance Management</div>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1 bg-[#1f2937] px-2 py-1.5 rounded border border-[#374151]">
+                <select id="quickMonth" onchange="quickSelectDate()" class="bg-transparent text-xs text-white focus:outline-none cursor-pointer font-bold">
+                    <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+                    <option value="3">Tháng 3</option><option value="4">Tháng 4</option>
+                    <option value="5">Tháng 5</option><option value="6">Tháng 6</option>
+                    <option value="7">Tháng 7</option><option value="8">Tháng 8</option>
+                    <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+                    <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+                </select>
+                <span class="text-gray-500 font-bold">/</span>
+                <select id="quickYear" onchange="quickSelectDate()" class="bg-transparent text-xs text-white focus:outline-none cursor-pointer font-bold">
+                    <option value="2024">2024</option><option value="2025">2025</option>
+                    <option value="2026">2026</option><option value="2027">2027</option>
+                </select>
+            </div>
+
+            <div class="flex items-center gap-2 bg-[#1f2937] px-3 py-1.5 rounded border border-[#374151]">
+                <label class="text-[10px] text-gray-400 uppercase font-bold">Từ:</label>
+                <input type="date" id="startDate" class="bg-transparent border-none text-xs text-white focus:outline-none font-mono cursor-pointer">
+                <div class="w-px h-3 bg-gray-600 mx-1"></div>
+                <label class="text-[10px] text-gray-400 uppercase font-bold">Đến:</label>
+                <input type="date" id="endDate" class="bg-transparent border-none text-xs text-white focus:outline-none font-mono cursor-pointer">
+            </div>
+
+            <div id="debug-log" class="text-xs font-mono text-gray-400 ml-2 hidden lg:block w-48 truncate text-right">Sẵn sàng</div>
+            <div class="h-6 w-px bg-gray-700 mx-1"></div>
+            
+            <button onclick="openOverhaulModal()" class="relative bg-amber-600 hover:bg-amber-700 px-4 py-1.5 text-[11px] font-bold text-white rounded transition shadow-lg flex items-center gap-2">
+                ⚡ ĐÁNH GIÁ ĐẠI TU
+            </button>
+
+            <button onclick="openDiagnostics()" class="relative bg-purple-600 hover:bg-purple-700 px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg flex items-center gap-2">
+                📋 CHẨN ĐOÁN
+                <span id="badge-diag" class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full hidden">0</span>
+            </button>
+
+            <button onclick="loadAllData()" id="btn-load" class="bg-[#2563eb] hover:bg-[#1d4ed8] px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg">
+                TẢI SỐ LIỆU (SYNC)
+            </button>
+            <button onclick="exportDiagPDF(true)" id="btn-pdf-main" class="bg-gray-700 hover:bg-gray-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-gray-600">
+                🖨️ XUẤT BÁO CÁO GE
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <aside class="w-[320px] bg-[#111827] border-r border-[#1f2937] flex flex-col shrink-0 z-10">
+            <div class="p-3 border-b border-[#1f2937] bg-[#1f2937]/50">
+                <input type="text" placeholder="Tìm kiếm thông số..." id="searchInput" onkeyup="filterTree()" class="w-full bg-[#374151] border border-[#4b5563] rounded px-3 py-1.5 text-xs text-white focus:outline-none">
+            </div>
+            <div class="flex-1 overflow-y-auto p-2 pb-10" id="tag-tree-container">
+                <div class="p-6 text-center text-xs text-gray-500">Đang chờ đồng bộ dữ liệu...</div>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto bg-[#0a0e17] p-4 relative" id="print-area-main">
+            <div class="grid grid-cols-4 gap-3 mb-4">
+                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-blue-500">
+                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tổng điểm dữ liệu AI</div>
+                    <div class="text-2xl text-white kpi-value" id="kpi-total">--</div>
+                </div>
+                <div class="panel p-4 flex flex-col justify-center">
+                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Mô hình AI Active</div>
+                    <div class="text-2xl text-blue-400 kpi-value" id="kpi-models">--</div>
+                </div>
+                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-red-500">
+                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Cảnh báo Anomaly</div>
+                    <div class="text-2xl text-red-500 kpi-value" id="kpi-anomaly">--</div>
+                </div>
+                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-emerald-500">
+                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tỷ lệ tin cậy (Health)</div>
+                    <div class="text-2xl text-emerald-400 kpi-value" id="kpi-health">--%</div>
+                </div>
+            </div>
+
+            <div class="panel flex flex-col h-[calc(100vh-180px)] min-h-[500px]">
+                <div class="p-3 border-b border-[#1f2937] bg-[#1f2937]/30 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
+                            <span id="chart-tag-title">Vui lòng chọn thông số bên trái</span>
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <div class="text-[9px] text-gray-400 uppercase font-bold">Max Residual Peak</div>
+                            <div class="text-lg kpi-value text-amber-500" id="chart-max-res">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col p-4 gap-2 relative">
+                    <div id="chart-loading" class="absolute inset-0 bg-[#111827]/80 backdrop-blur-sm z-10 hidden flex-col items-center justify-center">
+                        <div class="text-blue-500 mb-2 font-mono">Đang phân tích biểu đồ...</div>
+                    </div>
+
+                    <div class="flex-[3] relative border border-[#1f2937] rounded bg-[#0a0e17]">
+                        <div class="absolute top-2 left-3 z-10 text-[10px] font-bold text-gray-500 uppercase" id="title-main-chart">1. GIÁM SÁT ĐỘ LỆCH MÔ HÌNH AI (MODEL DEVIATION)</div>
+                        <div id="chart-main" class="h-full w-full"></div>
+                    </div>
+                    
+                    <div class="flex-[1.5] relative border border-[#1f2937] rounded bg-[#0a0e17]" id="res-container">
+                        <div id="res-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-[#0a0e17] bg-opacity-90 hidden">
+                            <span class="text-[11px] text-gray-400 font-bold tracking-widest border border-gray-600 bg-[#1f2937] px-4 py-1.5 rounded">CHỈ SỐ ĐỘC LẬP - KHÔNG ÁP DỤNG MÔ HÌNH AI</span>
+                        </div>
+                        <div class="absolute top-2 left-3 z-10 flex w-full pr-6 justify-between items-center text-[10px] font-bold text-gray-500 uppercase">
+                            <span>2. CHẨN ĐOÁN PHẦN DƯ (RESIDUAL DIAGNOSTICS)</span>
+                            <span class="text-red-400">Ngưỡng báo động: ±3.0</span>
+                        </div>
+                        <div id="chart-residual" class="h-full w-full"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="overhaulModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm" style="padding: 20px 0;">
+        <div class="bg-[#111827] border border-[#1f2937] w-[1200px] h-[750px] max-w-[95%] rounded-lg flex flex-col shadow-2xl relative">
+            <div class="bg-[#1f2937] p-4 flex justify-between items-center border-b border-[#374151] shrink-0">
+                <h3 class="text-amber-500 font-bold flex items-center gap-2 uppercase tracking-wide">⚡ HỒ SƠ ĐÁNH GIÁ CHẤT LƯỢNG SAU ĐẠI TU</h3>
+                <button onclick="closeOverhaulModal()" class="text-gray-400 hover:text-white text-2xl leading-none">×</button>
+            </div>
+            <div class="flex-1 flex overflow-hidden p-4 gap-4">
+                <div class="w-[55%] flex flex-col border border-[#1f2937] rounded bg-[#0a0e17] relative">
+                    <div class="p-3 border-b border-[#1f2937] flex justify-between items-center bg-[#1f2937]/50 gap-2 shrink-0">
+                        <select id="ovhUnit" class="bg-[#374151] text-xs text-white border border-[#4b5563] rounded px-3 py-1.5 font-bold outline-none cursor-pointer" onchange="renderRadar()">
+                            <option value="H1">TỔ MÁY H1</option>
+                            <option value="H2">TỔ MÁY H2</option>
+                        </select>
+                        <div class="text-[10px] font-bold text-gray-400">BIỂU ĐỒ BIẾN ĐỘNG (DELTA)</div>
+                    </div>
+                    <div class="relative w-full flex-1 block overflow-y-auto">
+                        <div id="radar-loading" class="absolute inset-0 flex items-center justify-center text-amber-500 font-mono text-sm hidden bg-[#0a0e17] z-10">Đang đồng bộ dữ liệu...</div>
+                        <div id="chart-radar" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="w-[45%] border border-[#1f2937] rounded bg-[#0a0e17] overflow-hidden flex flex-col">
+                    <div class="p-2 border-b border-[#1f2937] bg-[#1f2937]/30 flex justify-between items-center shrink-0">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">BẢNG CHI TIẾT ĐỘ LỆCH (°C / mm / ...)</span>
+                    </div>
+                    <div class="overflow-y-auto flex-1">
+                        <table class="w-full text-left">
+                            <thead class="bg-[#1f2937] sticky top-0 z-10">
+                                <tr>
+                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Thiết bị</th>
+                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Baseline</th>
+                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Thực tế</th>
+                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Biến động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ovhTableBody" class="text-xs">
+                                <tr><td colspan="4" class="text-center text-gray-500 italic py-8">Đang chờ dữ liệu...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="diagModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm overflow-y-auto" style="padding: 20px 0;">
+        <div id="diagModalContent" class="bg-[#111827] border border-[#1f2937] w-[850px] max-w-[95%] rounded-lg flex flex-col shadow-2xl relative transition-all" style="max-height: 85vh;">
+            <div id="diagModalHeader" class="bg-[#1f2937] p-4 flex justify-between items-center border-b border-[#374151]">
+                <h3 class="text-white font-bold flex items-center gap-2">📋 BÁO CÁO SỨC KHỎE TỔ MÁY & CHẨN ĐOÁN AI</h3>
+                <button onclick="closeDiagnostics()" class="text-gray-400 hover:text-white text-2xl leading-none">×</button>
+            </div>
+            
+            <div id="diagList" class="p-4 overflow-y-auto flex-1 flex flex-col gap-3">
+                </div>
+            
+            <div id="diagModalFooter" class="bg-[#1f2937]/50 p-3 flex justify-between items-center border-t border-[#374151]">
+                <button onclick="exportDiagPDF(false)" id="btn-diag-pdf" class="px-4 py-2 bg-[#059669] hover:bg-[#047857] text-white text-[11px] font-medium rounded transition flex items-center gap-2">
+                    🖨️ XUẤT BÁO CÁO GE
+                </button>
+                <button onclick="closeDiagnostics()" class="px-5 py-2 bg-gray-600 hover:bg-gray-500 text-white text-[11px] font-medium rounded transition">
+                    ĐÓNG LẠI
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="hidden-render-zone" style="position: absolute; top: 0; left: -9999px; width: 850px; background: white; z-index: -1;"></div>
+
+    <script>
+        let dbClient = null;
+        let charts = { main: null, residual: null, radar: null };
+        let activeTag = null;
+        let rawTagsData = [];
+        let tagCategories = {};
+        let allDiagnosticsData = []; 
+        let summaryHtmlPrint = ""; // Lưu trữ HTML ma trận để in
+
+        const orderLevel1_Tree = ['TỔ MÁY H1', 'TỔ MÁY H2', 'TRẠM PHÂN PHỐI 220KV', 'HỆ THỐNG TỰ DÙNG AC/DC', 'HỆ THỐNG THANH DẪN DÒNG', 'HỆ THỐNG ĐO LƯỜNG TI/TU', 'HỆ THỐNG KHÁC'];
+        const orderLevel2_Tree = ['◈ ĐIỆN', '◈ CƠ KHÍ', '◈ NHIỆT ĐỘ', '◈ ÁP LỰC', '◈ LÀM MÁT / LƯU LƯỢNG', '◈ MỨC DẦU', '◈ KHÁC'];
+        const diagOrderKeys = ['TỔ MÁY H1', 'TỔ MÁY H2', 'HỆ THỐNG CHUNG', 'HỆ THỐNG ĐO LƯỜNG TI/TU', 'HỆ THỐNG TỰ DÙNG AC/DC'];
+
+        function getLevel1(tagName) {
+            if(!tagName) return 'HỆ THỐNG KHÁC';
+            if(tagName.startsWith('H1 - ')) return 'TỔ MÁY H1';
+            if(tagName.startsWith('H2 - ')) return 'TỔ MÁY H2';
+            if(tagName.includes('ĐZ27')) return 'TRẠM PHÂN PHỐI 220KV';
+            if(tagName.includes('MDB') || tagName.includes('CHAR') || tagName.includes('MBA TD')) return 'HỆ THỐNG TỰ DÙNG AC/DC';
+            if(tagName.includes('TDD') || tagName.includes('TE1') || tagName.includes('TE2') || tagName.includes('Áp lực khí cấp cho TDD')) return 'HỆ THỐNG THANH DẪN DÒNG';
+            if(tagName.includes('TU-') || tagName.includes('Nhiệt độ ngoài trời')) return 'HỆ THỐNG ĐO LƯỜNG TI/TU';
+            return 'HỆ THỐNG KHÁC';
+        }
+
+        function translateLvl2(groupEng) {
+            const dict = { 'MECHANICAL': '◈ CƠ KHÍ', 'ELECTRICAL': '◈ ĐIỆN', 'TEMPERATURE': '◈ NHIỆT ĐỘ', 'PRESSURE': '◈ ÁP LỰC', 'COOLING': '◈ LÀM MÁT / LƯU LƯỢNG', 'LEVEL': '◈ MỨC DẦU', 'OTHER': '◈ KHÁC' };
+            return dict[groupEng] || groupEng || '◈ KHÁC';
+        }
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = today.getMonth(); 
+            
+            const qm = document.getElementById('quickMonth');
+            const qy = document.getElementById('quickYear');
+            if(qm) qm.value = m + 1;
+            if(qy) qy.value = y;
+            
+            const firstDay = new Date(y, m, 1);
+            const fmt = (d) => {
+                const mo = String(d.getMonth()+1).padStart(2, '0');
+                const da = String(d.getDate()).padStart(2, '0');
+                return `${d.getFullYear()}-${mo}-${da}`;
+            };
+            
+            document.getElementById("startDate").value = fmt(firstDay);
+            document.getElementById("endDate").value = fmt(today); 
+            
+            initDatabase();
+            setTimeout(() => { loadAllData(); }, 300);
+        });
+
+        function quickSelectDate() {
+            const m = parseInt(document.getElementById('quickMonth').value);
+            const y = parseInt(document.getElementById('quickYear').value);
+            const firstDay = new Date(y, m - 1, 1);
+            const lastDay = new Date(y, m, 0); 
+            const today = new Date();
+            const fmt = (d) => {
+                const mo = String(d.getMonth()+1).padStart(2, '0');
+                const da = String(d.getDate()).padStart(2, '0');
+                return `${d.getFullYear()}-${mo}-${da}`;
+            };
+            
+            document.getElementById('startDate').value = fmt(firstDay);
+            if (y === today.getFullYear() && (m - 1) === today.getMonth()) document.getElementById('endDate').value = fmt(today);
+            else document.getElementById('endDate').value = fmt(lastDay);
+        }
+
+        function initDatabase() {
+            if (dbClient) return true;
+            const URL = "https://ekvlcgghciswvgzikjcm.supabase.co";
+            const KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrdmxjZ2doY2lzd3ZnemlramNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1MDI4NjQsImV4cCI6MjA5NzA3ODg2NH0.fzrGnaOyks3BqujRObH6Dn_OpsTCfspy9ecxQJH56xY";
+            dbClient = window.supabase.createClient(URL, KEY, { auth: { persistSession: false } });
+            return true;
+        }
+
+        // TÍNH NĂNG MỚI: TẠO MA TRẬN TÓM TẮT SỨC KHỎE (SUBSYSTEM SUMMARY)
+        function buildSubsystemSummary(diagsData) {
+            let subCounts = {
+                'TỔ MÁY H1': { count: 0, maxSev: 'OK' },
+                'TỔ MÁY H2': { count: 0, maxSev: 'OK' },
+                'ĐO LƯỜNG TI/TU': { count: 0, maxSev: 'OK' },
+                'TỰ DÙNG AC/DC': { count: 0, maxSev: 'OK' }
+            };
+
+            diagsData.forEach(d => {
+                let cleanFaultName = (d.fault_name || "").replace(/^\[.*?\]\s*-\s*/, '').replace(/^.*?: \s*/, '').trim();
+                let tUp = cleanFaultName.toUpperCase();
+                let sys = null;
+                if (tUp.includes('H1')) sys = 'TỔ MÁY H1';
+                else if (tUp.includes('H2')) sys = 'TỔ MÁY H2';
+                else if (tUp.includes('TI/TU') || tUp.includes('TU-') || tUp.includes('NGOÀI TRỜI')) sys = 'ĐO LƯỜNG TI/TU';
+                else if (tUp.includes('AC/DC') || tUp.includes('MDB') || tUp.includes('CHAR')) sys = 'TỰ DÙNG AC/DC';
+
+                if(sys && subCounts[sys]) {
+                    subCounts[sys].count++;
+                    if(d.severity === 'CRITICAL') subCounts[sys].maxSev = 'CRITICAL';
+                    else if(d.severity === 'WARNING' && subCounts[sys].maxSev !== 'CRITICAL') subCounts[sys].maxSev = 'WARNING';
+                }
+            });
+
+            // HTML for Web Modal
+            let webHtml = `<div class="mb-6"><h3 class="text-white text-[14px] font-bold border-b border-[#374151] pb-2 mb-3 tracking-wide uppercase">I. MA TRẬN SỨC KHỎE PHÂN HỆ</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-3">`;
+            
+            // HTML for PDF Print (Dùng inline style thay vì Tailwind để lúc in PDF không bị mất màu)
+            summaryHtmlPrint = `<div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">`;
+
+            for(let sys in subCounts) {
+                let st = subCounts[sys];
+                let colorClass = 'bg-emerald-900/20 border-emerald-500/30 text-emerald-400';
+                let icon = '🟢';
+                let statusText = 'BÌNH THƯỜNG';
+                let printBg = '#f0fdf4'; let printBorder = '#86efac'; let printText = '#166534';
+
+                if(st.maxSev === 'CRITICAL') { 
+                    colorClass = 'bg-red-900/20 border-red-500/30 text-red-400'; 
+                    icon = '🔴'; statusText = `${st.count} Lỗi Critical`; 
+                    printBg = '#fef2f2'; printBorder = '#fca5a5'; printText = '#991b1b';
+                } else if(st.maxSev === 'WARNING') { 
+                    colorClass = 'bg-amber-900/20 border-amber-500/30 text-amber-500'; 
+                    icon = '🟡'; statusText = `${st.count} Cảnh báo`; 
+                    printBg = '#fffbeb'; printBorder = '#fcd34d'; printText = '#92400e';
+                }
+
+                webHtml += `<div class="border rounded p-3 flex flex-col justify-center items-center text-center shadow-sm ${colorClass}">
+                                <div class="text-[11px] font-bold text-gray-300 mb-1">${sys}</div>
+                                <div class="text-xl mb-1">${icon}</div>
+                                <div class="text-[10px] font-bold uppercase">${statusText}</div>
+                            </div>`;
+                            
+                summaryHtmlPrint += `<div style="flex: 1; border: 1px solid ${printBorder}; border-radius: 6px; padding: 15px; text-align: center; background-color: ${printBg}; min-width: 150px;">
+                                        <div style="font-size: 11px; font-weight: bold; color: #374151; margin-bottom: 5px;">${sys}</div>
+                                        <div style="font-size: 20px; margin-bottom: 5px;">${icon}</div>
+                                        <div style="font-size: 11px; font-weight: bold; color: ${printText};">${statusText}</div>
+                                    </div>`;
+            }
+            webHtml += `</div></div>`;
+            summaryHtmlPrint += `</div>`;
+
+            return webHtml;
+        }
+
+        async function fetchDiagnostics() {
+            try {
+                if (Object.keys(tagCategories).length === 0) {
+                    const { data: dictData } = await dbClient.from('sys_tag_dictionary').select('tag_name, system_group').eq('is_active', true);
+                    if(dictData) dictData.forEach(d => tagCategories[d.tag_name] = d.system_group);
+                }
+                const sD = document.getElementById("startDate").value;
+                const eD = document.getElementById("endDate").value;
+                
+                allDiagnosticsData = [];
+                let from = 0; const step = 1000; let fetchMore = true;
+
+                while (fetchMore) {
+                    const { data, error } = await dbClient.from('op_diagnostics').select('*').gte('report_date', sD).lte('report_date', eD).order('report_date', { ascending: true }).range(from, from + step - 1);
+                    if (error) throw error;
+                    if (data && data.length > 0) {
+                        allDiagnosticsData = allDiagnosticsData.concat(data);
+                        if (data.length < step) fetchMore = false;
+                        else from += step;
+                    } else fetchMore = false;
+                }
+                
+                const badge = document.getElementById('badge-diag');
+                const diagList = document.getElementById('diagList');
+                
+                badge.innerText = allDiagnosticsData.length;
+                badge.classList.remove('hidden');
+                
+                // Render Ma trận Sức khỏe
+                let html = buildSubsystemSummary(allDiagnosticsData);
+
+                html += `<h3 class="text-white text-[14px] font-bold border-b border-[#374151] pb-2 mb-3 tracking-wide uppercase">II. DANH SÁCH CẢNH BÁO CHI TIẾT</h3>`;
+
+                const groups = {
+                    sensor: { title: '1. VÔ LÝ / ĐỨT CÁP / NHIỄU', items: [], color: 'text-gray-400', border: 'border-gray-500/30' },
+                    alarm:  { title: '2. BẢO VỆ TỔ MÁY (TRIP LIMITS)', items: [], color: 'text-orange-400', border: 'border-orange-500/30' },
+                    ai:     { title: '3. LỆCH XU HƯỚNG AI (DEVIATIONS)', items: [], color: 'text-blue-400', border: 'border-blue-500/30' }
+                };
+
+                allDiagnosticsData.forEach(d => {
+                    let fnameUpper = (d.fault_name || "").toUpperCase();
+                    if(fnameUpper.includes('VÔ LÝ') || fnameUpper.includes('BẤT THƯỜNG') || fnameUpper.includes('NHIỄU')) groups.sensor.items.push(d);
+                    else if(fnameUpper.includes('BẢO VỆ TỔ MÁY')) groups.alarm.items.push(d);
+                    else groups.ai.items.push(d); 
+                });
+
+                for(const key in groups) {
+                    const group = groups[key];
+                    html += `<div class="mb-6 diag-group"><h3 class="${group.color} text-[13px] font-bold border-b border-[#1f2937] pb-2 mb-3 tracking-wide uppercase">${group.title} (${group.items.length})</h3>`;
+
+                    if (group.items.length === 0) {
+                        html += `<div class="mt-2 p-3 border border-dashed border-[#374151] rounded bg-[#1f2937]/30 text-center text-gray-500 italic text-[12px] diag-empty-box break-inside-avoid">✔️ Trạng thái tốt. Không có cảnh báo.</div></div>`;
+                        continue; 
+                    }
+
+                    const sysGroups = {};
+                    group.items.forEach(d => {
+                        try {
+                            let cleanFaultName = (d.fault_name || "").replace(/^\[.*?\]\s*-\s*/, '').replace(/^.*?: \s*/, '').trim();
+                            let tUp = cleanFaultName.toUpperCase();
+                            let sysLevel1 = 'HỆ THỐNG CHUNG'; 
+                            if (tUp.includes('H1')) sysLevel1 = 'TỔ MÁY H1';
+                            else if (tUp.includes('H2')) sysLevel1 = 'TỔ MÁY H2';
+                            else if (tUp.includes('TI/TU') || tUp.includes('TU-') || tUp.includes('NGOÀI TRỜI')) sysLevel1 = 'HỆ THỐNG ĐO LƯỜNG TI/TU';
+                            else if (tUp.includes('AC/DC') || tUp.includes('MDB') || tUp.includes('CHAR')) sysLevel1 = 'HỆ THỐNG TỰ DÙNG AC/DC';
+
+                            if(!sysGroups[sysLevel1]) sysGroups[sysLevel1] = [];
+                            sysGroups[sysLevel1].push({d, cleanFaultName});
+                        } catch(err) {}
+                    });
+
+                    let sortedSysGroups = Object.keys(sysGroups).sort((a, b) => {
+                        let iA = diagOrderKeys.indexOf(a); let iB = diagOrderKeys.indexOf(b);
+                        return (iA === -1 ? 99 : iA) - (iB === -1 ? 99 : iB);
+                    });
+
+                    sortedSysGroups.forEach(sysName => {
+                        html += `<div class="mt-4 mb-2 flex items-center gap-2"><span class="text-[12px] font-extrabold text-blue-300 bg-blue-900/30 px-3 py-1 rounded shadow-sm border border-blue-500/30 diag-subgroup-title">❖ ${sysName}</span></div><div class="space-y-3 pl-4 border-l-2 border-gray-700/50 diag-subgroup-list">`;
+                        sysGroups[sysName].forEach(itemObj => {
+                            let d = itemObj.d;
+                            let dateFmt = d.report_date ? d.report_date.split('-').reverse().join('/') : "--/--/----";
+                            let tMark = d.time_mark || "N/A";
+                            let severity = d.severity || "INFO";
+                            let isCrit = severity === 'CRITICAL';
+                            let badgeClass = isCrit ? 'bg-red-500 text-white' : 'bg-orange-500 text-white';
+                            let bgBox = isCrit ? 'bg-red-900/10' : 'bg-blue-900/10';
+
+                            html += `
+                            <div class="${group.border} border rounded p-3 relative overflow-hidden ${bgBox} diag-item-box break-inside-avoid" style="page-break-inside: avoid;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="text-[11px] text-gray-400 font-medium bg-[#111827] px-2 py-1 rounded inline-block border border-[#374151] diag-time-badge">🕒 ${dateFmt} lúc ${tMark}</div>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded ${badgeClass} diag-severity-badge">${severity}</span>
+                                </div>
+                                <div class="font-bold text-gray-200 text-[13px] mb-1.5 diag-fault-name">${itemObj.cleanFaultName}</div>
+                                <div class="text-[12px] text-gray-400 leading-relaxed italic diag-evidence">${d.evidence || "Không có thông tin chi tiết."}</div>
+                            </div>`;
+                        });
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                }
+                diagList.innerHTML = html;
+            } catch(e) { document.getElementById('diagList').innerHTML = `<div class="p-4 text-red-500 font-mono">Đã xảy ra lỗi khi tải chẩn đoán: ${e.message}</div>`; }
+        }
+
+        async function openDiagnostics() { await fetchDiagnostics(); document.getElementById('diagModal').classList.remove('hidden'); document.getElementById('diagModal').classList.add('flex'); }
+        function closeDiagnostics() { document.getElementById('diagModal').classList.add('hidden'); document.getElementById('diagModal').classList.remove('flex'); }
+
+        // =======================================================================================
+        // PHƯƠNG PHÁP XUẤT PDF MỚI (BẢN V23) - MA TRẬN SỨC KHỎE + HIGHLIGHT ĐỎ + CAPTION
+        // =======================================================================================
+        async function exportDiagPDF(isQuickPrint = false) {
+            const btn = isQuickPrint ? document.getElementById('btn-pdf-main') : document.getElementById('btn-diag-pdf');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '⏳ ĐANG RENDER BIỂU ĐỒ BÁO CÁO...';
+            btn.disabled = true;
+
+            try {
+                if (isQuickPrint) await fetchDiagnostics();
+
+                const sD_raw = document.getElementById("startDate").value;
+                const eD_raw = document.getElementById("endDate").value;
+                const sD = sD_raw.split('-').reverse().join('/');
+                const eD = eD_raw.split('-').reverse().join('/');
+                const printDateStr = new Date().toLocaleDateString('vi-VN').replace(/\//g, '');
+                const docTitle = `${printDateStr}_Bao_cao_phan_tich_APM_AVC`;
+
+                // Bóc tách tag để vẽ biểu đồ và gán Caption
+                let tagsToDrawMap = new Map();
+                allDiagnosticsData.forEach(d => {
+                    let parts = (d.fault_name || "").split(' - ');
+                    if(parts.length >= 2) {
+                        let possibleTag = parts.slice(1).join(' - ').trim();
+                        if(rawTagsData.some(t => t.tag_name === possibleTag)) tagsToDrawMap.set(possibleTag, d.evidence);
+                    }
+                    if(d.evidence) {
+                        let regex = /\[(.*?)\]:/g; let match;
+                        while ((match = regex.exec(d.evidence)) !== null) {
+                            let shortTag = match[1].trim();
+                            let fullTag = rawTagsData.find(t => t.tag_name.includes(shortTag));
+                            if(fullTag) tagsToDrawMap.set(fullTag.tag_name, d.evidence);
+                        }
+                    }
+                });
+                let tagsArray = Array.from(tagsToDrawMap.keys());
+
+                let chartImagesHtml = '';
+                const tempZone = document.getElementById('hidden-render-zone');
+                tempZone.innerHTML = ''; 
+
+                if(tagsArray.length > 0) {
+                    chartImagesHtml += `<div style="page-break-before: always; margin-top: 30px;"></div>`; 
+                    chartImagesHtml += `<h3 style="font-size: 16px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 17px; text-transform: uppercase;">III. BIỂU ĐỒ CHỨNG MINH LỖI (EVIDENCES)</h3>`;
+                    chartImagesHtml += `<p style="font-size: 12px; font-style: italic; color: #555; margin-bottom: 20px;">* Vùng bôi đỏ là thời điểm phát hiện bất thường. Đường xanh lá (AI) vs Đường đỏ (Thực tế).</p>`;
+                }
+
+                for(let i = 0; i < tagsArray.length; i++) {
+                    let tag = tagsArray[i];
+                    btn.innerHTML = `⏳ KÉO BIỂU ĐỒ LỖI ${i+1}/${tagsArray.length}...`;
+                    
+                    const { data } = await dbClient.from('op_predicted_metrics')
+                        .select('actual_value, estimated_value, time_mark, is_anomaly, op_daily_reports!inner(report_date)')
+                        .eq('tag_name', tag).gte('op_daily_reports.report_date', sD_raw).lte('op_daily_reports.report_date', eD_raw).limit(2000);
+                        
+                    if(data && data.length > 0) {
+                        let cleanMap = {};
+                        data.forEach(d => {
+                            let hNum = parseInt(d.time_mark.replace(/\D/g, '')) || 0;
+                            let key = `${d.op_daily_reports.report_date}_${hNum.toString().padStart(2, '0')}`;
+                            if(!cleanMap[key] || (cleanMap[key].actual_value === null || Math.abs(d.actual_value || 0) > Math.abs(cleanMap[key].actual_value || 0))) {
+                                cleanMap[key] = d;
+                            }
+                        });
+                        let cleanData = Object.keys(cleanMap).sort().map(k => cleanMap[k]);
+                        
+                        let labels = cleanData.map(d => `${d.op_daily_reports.report_date.substring(8,10)}/${d.op_daily_reports.report_date.substring(5,7)} ${d.time_mark}`);
+                        let act = cleanData.map(d => d.actual_value);
+                        let est = cleanData.map(d => d.estimated_value);
+
+                        // TÍNH NĂNG MỚI: Tính toán vùng Highlight báo lỗi (Anomaly Zones)
+                        let zones = [];
+                        let startX = null; let endX = null;
+                        for (let j = 0; j < cleanData.length; j++) {
+                            let d = cleanData[j];
+                            let xVal = `${d.op_daily_reports.report_date.substring(8,10)}/${d.op_daily_reports.report_date.substring(5,7)} ${d.time_mark}`;
+                            if (d.is_anomaly) {
+                                if (!startX) startX = xVal;
+                                endX = xVal; 
+                            } else {
+                                if (startX) { zones.push({ start: startX, end: endX }); startX = null; endX = null; }
+                            }
+                        }
+                        if (startX) zones.push({ start: startX, end: endX });
+
+                        let xaxisAnnotations = zones.map(z => {
+                            if (z.start === z.end) {
+                                return { x: z.start, borderColor: '#ef4444', strokeDashArray: 4, label: { text: 'Lỗi', style: { background: '#ef4444', color: '#fff', fontSize: '9px' } } };
+                            } else {
+                                return { x: z.start, x2: z.end, fillColor: '#ef4444', opacity: 0.15, label: { text: 'Vùng Lỗi', style: { background: '#ef4444', color: '#fff', fontSize: '9px' } } };
+                            }
+                        });
+
+                        let tempChartDiv = document.createElement('div');
+                        tempChartDiv.style.width = '850px'; 
+                        tempChartDiv.style.height = '320px';
+                        tempZone.appendChild(tempChartDiv);
+
+                        let options = {
+                            series: [{ name: 'Thực tế', data: act }, { name: 'AI Dự đoán', data: est }],
+                            chart: { type: 'line', height: 320, width: 850, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
+                            colors: ['#dc2626', '#10b981'],
+                            stroke: { width: [2, 2], curve: 'straight', dashArray: [0, 4] },
+                            annotations: { xaxis: xaxisAnnotations }, // Nhúng highlight vào biểu đồ
+                            xaxis: { 
+                                categories: labels, 
+                                labels: { show: true, rotate: -45, hideOverlappingLabels: true, style: { colors: '#374151', fontSize: '9px' } },
+                                tickAmount: 12, tooltip: { enabled: false } 
+                            },
+                            yaxis: { labels: { style: { colors: '#000', fontSize: '11px' }, formatter: (val) => val.toFixed(1) } },
+                            legend: { position: 'top', fontSize: '12px', markers: { radius: 0 } },
+                            dataLabels: { enabled: false },
+                            grid: { padding: { bottom: 15 } }
+                        };
+
+                        let chart = new ApexCharts(tempChartDiv, options);
+                        await chart.render();
+                        
+                        await new Promise(r => setTimeout(r, 1000));
+                        const uri = await chart.dataURI();
+                        
+                        // Lấy text Caption (RCA)
+                        let rawCaption = tagsToDrawMap.get(tag) || "";
+                        // Format lại caption cho đẹp khi in PDF
+                        let formattedCaption = rawCaption.replace(/<br>/g, ' ').replace(/<span.*?>/g, '').replace(/<\/span>/g, '').replace(/🔍/g, '•').replace(/💡/g, '•');
+
+                        chartImagesHtml += `
+                            <div style="margin-bottom: 30px; border: 1px solid #ccc; padding: 15px; border-radius: 6px; page-break-inside: avoid; background: #fff;">
+                                <div style="font-weight: bold; font-size: 14px; margin-bottom: 5px; color: #b91c1c;">❖ Biểu đồ phân tích: ${tag}</div>
+                                <img src="${uri.imgURI}" style="width: 100%; height: auto; margin-bottom: 10px;" />
+                                <div style="font-size: 13px; color: #374151; font-style: italic; background-color: #f9fafb; padding: 10px; border-left: 3px solid #f59e0b;">
+                                    <b>Kết luận AI:</b> ${formattedCaption}
+                                </div>
+                            </div>
+                        `;
+                        
+                        chart.destroy();
+                        tempZone.innerHTML = '';
+                    }
+                }
+
+                btn.innerHTML = '⏳ ĐANG TẠO BẢN IN PDF...';
+                
+                // Trích xuất list cảnh báo (Bỏ đi thẻ Tóm Tắt Web ban đầu)
+                let diagListEl = document.getElementById('diagList').cloneNode(true);
+                if(diagListEl.firstElementChild && diagListEl.firstElementChild.tagName === 'DIV') {
+                    diagListEl.removeChild(diagListEl.firstElementChild); // Bỏ cái ma trận của Web đi để xài ma trận in
+                }
+                let eventListHtml = diagListEl.innerHTML;
+                
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'fixed';
+                iframe.style.right = '0';
+                iframe.style.bottom = '0';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = 'none';
+                document.body.appendChild(iframe);
+
+                const doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write(`
+                    <html>
+                    <head>
+                        <title>${docTitle}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; color: #000; background: #fff; padding: 30px; margin: 0; }
+                            .diag-group h3 { color: #000 !important; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 15px; }
+                            .diag-subgroup-title { font-weight: bold; background: #e0e7ff !important; color: #1e3a8a !important; padding: 6px 12px; border-radius: 4px; display: inline-block; margin: 15px 0 10px 0; font-size: 13px; border: 1px solid #bfdbfe !important; }
+                            .diag-item-box { border: 1px solid #ccc !important; padding: 15px; margin-bottom: 15px; border-radius: 6px; background-color: #fafafa !important; page-break-inside: avoid; }
+                            .diag-item-box.bg-red-900\\/10 { background-color: #fef2f2 !important; border-color: #fca5a5 !important; }
+                            .diag-item-box.bg-blue-900\\/10 { background-color: #eff6ff !important; border-color: #93c5fd !important; }
+                            .diag-empty-box { border: 1px dashed #aaa !important; padding: 20px; margin-bottom: 15px; border-radius: 6px; background-color: #f9fafb !important; color: #555 !important; font-style: italic; text-align: center; page-break-inside: avoid; font-size: 13px; }
+                            .diag-time-badge { font-size: 12px; background: #fff !important; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc !important; display: inline-block; font-weight: bold; color: #444 !important; }
+                            .diag-severity-badge { font-size: 11px; font-weight: bold; padding: 4px 8px; border-radius: 4px; color: #fff !important; float: right; text-transform: uppercase; }
+                            .bg-red-500 { background-color: #ef4444 !important; }
+                            .bg-orange-500 { background-color: #f97316 !important; }
+                            .diag-fault-name { font-weight: bold; font-size: 14px; margin: 12px 0 6px 0; color: #111 !important; }
+                            .diag-evidence { font-size: 13px; color: #444 !important; font-style: italic; line-height: 1.5; }
+                            @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .diag-item-box, .diag-empty-box { page-break-inside: avoid; } }
+                        </style>
+                    </head>
+                    <body>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: flex-start; gap: 12px;">
+                                <img src="https://lh3.googleusercontent.com/d/1XCl2AoNcouyrJC0Ht5bZtmZnghkzQE4G" style="height: 40px; width: auto; object-fit: contain;" />
+                                <div style="text-align: center; font-size: 13px; font-family: 'Times New Roman', Times, serif; color: #000; white-space: nowrap;">
+                                    <div style="font-weight: normal; margin-bottom: 2px;">TỔNG CÔNG TY PHÁT ĐIỆN 2</div>
+                                    <div style="font-weight: bold; text-decoration: underline;">CÔNG TY CP THỦY ĐIỆN A VƯƠNG</div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; font-size: 13px; font-family: 'Times New Roman', Times, serif; color: #000; white-space: nowrap;">
+                                <div style="font-weight: bold; margin-bottom: 2px;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                <div style="font-weight: bold; text-decoration: underline;">Độc lập - Tự do - Hạnh phúc</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 30px; margin-bottom: 30px; font-family: 'Times New Roman', Times, serif;">
+                            <h2 style="font-size: 20px; font-weight: bold; margin: 0; color: #000;">BÁO CÁO PHÂN TÍCH CHUYÊN SÂU (AI PREDICTIVE)</h2>
+                            <p style="font-size: 14px; font-style: italic; margin-top: 8px; color: #333;">Giai đoạn phân tích: Từ ${sD} đến ${eD}</p>
+                        </div>
+                        
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase;">I. MA TRẬN SỨC KHỎE TỔNG THỂ</h3>
+                        ${summaryHtmlPrint}
+
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">II. DANH SÁCH SỰ KIỆN CHI TIẾT</h3>
+                        ${eventListHtml}
+                        
+                        ${chartImagesHtml}
+                    </body>
+                    </html>
+                `);
+                doc.close();
+
+                setTimeout(() => {
+                    const originalTitle = document.title;
+                    document.title = docTitle;
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                    document.title = originalTitle;
+                    document.body.removeChild(iframe); 
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 1000);
+
+            } catch (error) {
+                console.error(error);
+                alert("Lỗi xuất báo cáo: " + error.message);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function loadAllData() {
+            const btn = document.getElementById('btn-load');
+            const debugLog = document.getElementById('debug-log');
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+            
+            if(!startDate || !endDate) return alert("Vui lòng chọn Từ ngày và Đến ngày!");
+
+            try {
+                btn.innerText = "ĐANG ĐỒNG BỘ...";
+                debugLog.innerText = "Đang tải danh mục...";
+                initDatabase();
+
+                const { data: tags, error: errTags } = await dbClient.from('sys_tag_dictionary').select('tag_name, system_group').eq('is_active', true);
+                if (errTags) throw new Error(errTags.message);
+                
+                rawTagsData = tags;
+                tagCategories = {};
+                tags.forEach(t => tagCategories[t.tag_name] = t.system_group);
+
+                renderTree(tags);
+
+                debugLog.innerText = "Đang tính toán KPI...";
+                let {data: rawMetrics} = await dbClient.from('op_predicted_metrics').select('actual_value, is_anomaly, time_mark, op_daily_reports!inner(report_date)').gte('op_daily_reports.report_date', startDate).lte('op_daily_reports.report_date', endDate);
+                
+                let uniqueKPI = new Set();
+                let anomalyCount = 0;
+                
+                if (rawMetrics) {
+                    rawMetrics.forEach(m => {
+                        let hourStr = m.time_mark.replace(/\D/g, '').padStart(2, '0');
+                        let key = `${m.op_daily_reports.report_date}_${hourStr}`;
+                        if (!uniqueKPI.has(key)) {
+                            uniqueKPI.add(key);
+                            if (m.is_anomaly) anomalyCount++;
+                        }
+                    });
+                }
+
+                let totalCount = uniqueKPI.size;
+
+                document.getElementById('kpi-total').innerText = (totalCount || 0).toLocaleString();
+                document.getElementById('kpi-anomaly').innerText = (anomalyCount || 0).toLocaleString();
+                document.getElementById('kpi-models').innerText = tags.length.toLocaleString();
+                const health = totalCount > 0 ? ((1 - (anomalyCount / totalCount)) * 100).toFixed(1) : '--';
+                document.getElementById('kpi-health').innerText = health + '%';
+
+                await fetchDiagnostics(); 
+                debugLog.innerHTML = `<span class="text-emerald-500">Đồng bộ hoàn tất.</span>`;
+
+                if (!activeTag && tags.length > 0) document.querySelector('.tree-item').click();
+
+            } catch (error) {
+                debugLog.innerHTML = `<span class="text-red-500">Lỗi: ${error.message}</span>`;
+            } finally {
+                btn.innerText = `TẢI SỐ LIỆU (SYNC)`;
+            }
+        }
+
+        function renderTree(tagsArray) {
+            let treeObj = {};
+            tagsArray.forEach(t => {
+                let l1 = getLevel1(t.tag_name);
+                let l2 = translateLvl2(t.system_group);
+                if(!treeObj[l1]) treeObj[l1] = {};
+                if(!treeObj[l1][l2]) treeObj[l1][l2] = [];
+                treeObj[l1][l2].push(t.tag_name);
+            });
+
+            let sortedL1 = Object.keys(treeObj).sort((a, b) => {
+                let iA = orderLevel1_Tree.indexOf(a); let iB = orderLevel1_Tree.indexOf(b);
+                return (iA === -1 ? 99 : iA) - (iB === -1 ? 99 : iB);
+            });
+
+            let html = '';
+            sortedL1.forEach(l1 => {
+                let countL1 = Object.values(treeObj[l1]).flat().length;
+                let displayMode = (l1 === 'TỔ MÁY H1') ? 'block' : 'none';
+
+                html += `<div class="tree-header" onclick="toggleGroup('${l1.replace(/\s+/g, '')}')">
+                            <span>❖ ${l1}</span><span class="bg-[#3b82f6] text-white px-2 py-0.5 rounded text-[10px] shadow">${countL1}</span>
+                         </div>
+                         <div id="grp-${l1.replace(/\s+/g, '')}" style="display: ${displayMode};">`;
+                
+                let sortedL2 = Object.keys(treeObj[l1]).sort((a, b) => {
+                    let iA = orderLevel2_Tree.indexOf(a); let iB = orderLevel2_Tree.indexOf(b);
+                    return (iA === -1 ? 99 : iA) - (iB === -1 ? 99 : iB);
+                });
+
+                sortedL2.forEach(l2 => {
+                    html += `<div class="tree-group-lvl-2"><span>${l2}</span><span class="text-gray-600">${treeObj[l1][l2].length}</span></div>`;
+                    treeObj[l1][l2].sort((a,b)=>a.localeCompare(b)).forEach(tagName => {
+                        let isActive = (tagName === activeTag) ? 'active' : '';
+                        html += `<div class="tree-item ${isActive}" title="${tagName}" onclick="drawCharts('${tagName}', this)">${tagName}</div>`;
+                    });
+                });
+                html += `</div>`;
+            });
+            document.getElementById('tag-tree-container').innerHTML = html;
+        }
+
+        function toggleGroup(id) {
+            let el = document.getElementById('grp-'+id);
+            if(el) el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function filterTree() {
+            let keyword = document.getElementById('searchInput').value.toLowerCase();
+            renderTree(rawTagsData.filter(t => t.tag_name.toLowerCase().includes(keyword)));
+            document.querySelectorAll('[id^="grp-"]').forEach(el => el.style.display = 'block');
+        }
+
+        async function drawCharts(tagName, el) {
+            if(el) {
+                document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+            }
+            document.getElementById('chart-tag-title').innerText = tagName;
+            activeTag = tagName;
+
+            const debugLog = document.getElementById('debug-log');
+            const loader = document.getElementById('chart-loading');
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+
+            debugLog.innerText = `Phân tích: ${tagName}...`;
+            loader.classList.remove('hidden'); loader.style.display = 'flex';
+            
+            try {
+                const { data, error } = await dbClient.from('op_predicted_metrics')
+                    .select('actual_value, estimated_value, time_mark, residual_value, is_anomaly, id, op_daily_reports!inner(report_date)')
+                    .eq('tag_name', tagName).gte('op_daily_reports.report_date', startDate).lte('op_daily_reports.report_date', endDate).limit(10000); 
+                
+                if (error) throw new Error(error.message);
+                if (!data || data.length === 0) {
+                    document.getElementById('chart-main').innerHTML = `<div class="h-full flex items-center justify-center text-amber-500 font-mono text-sm">Chưa có dữ liệu vận hành.</div>`;
+                    if (charts.residual) charts.residual.destroy();
+                    document.getElementById('chart-residual').innerHTML = '';
+                    document.getElementById('chart-max-res').innerText = "--";
+                    return;
+                }
+
+                let cleanMap = {};
+                for (let d = new Date(startDate); d <= new Date(endDate); d.setDate(d.getDate() + 1)) {
+                    let dStr = d.toISOString().split('T')[0];
+                    for (let i = 1; i <= 24; i++) {
+                        let key = `${dStr}_${i.toString().padStart(2, '0')}`;
+                        cleanMap[key] = { time_mark: `${i}h`, op_daily_reports: { report_date: dStr }, actual_value: null, estimated_value: null, residual_value: 0, is_anomaly: false };
+                    }
+                }
+
+                data.forEach(d => {
+                    let hNum = parseInt(d.time_mark.replace(/\D/g, '')) || 0;
+                    let key = `${d.op_daily_reports.report_date}_${hNum.toString().padStart(2, '0')}`;
+                    if(cleanMap[key]) {
+                        if (cleanMap[key].actual_value === null || Math.abs(d.actual_value || 0) > Math.abs(cleanMap[key].actual_value || 0)) {
+                            cleanMap[key] = d;
+                        }
+                    }
+                });
+
+                let cleanData = Object.keys(cleanMap).sort().map(k => cleanMap[k]);
+                let labels = cleanData.map(d => `${d.op_daily_reports.report_date.substring(8,10)}/${d.op_daily_reports.report_date.substring(5,7)} ${d.time_mark}`);
+                
+                let act = cleanData.map(d => d.actual_value);
+                let est = cleanData.map(d => d.estimated_value);
+                let res = cleanData.map(d => d.residual_value);
+
+                // TÍNH TOÁN HIGHLIGHT CHO BIỂU ĐỒ CHÍNH TRÊN WEB
+                let zones = [];
+                let startX = null; let endX = null;
+                for (let j = 0; j < cleanData.length; j++) {
+                    let d = cleanData[j];
+                    let xVal = `${d.op_daily_reports.report_date.substring(8,10)}/${d.op_daily_reports.report_date.substring(5,7)} ${d.time_mark}`;
+                    if (d.is_anomaly) {
+                        if (!startX) startX = xVal;
+                        endX = xVal; 
+                    } else {
+                        if (startX) { zones.push({ start: startX, end: endX }); startX = null; endX = null; }
+                    }
+                }
+                if (startX) zones.push({ start: startX, end: endX });
+
+                let xaxisAnnotations = zones.map(z => {
+                    if (z.start === z.end) {
+                        return { x: z.start, borderColor: '#ef4444', strokeDashArray: 4, label: { text: 'Lỗi', style: { background: '#ef4444', color: '#fff', fontSize: '9px' } } };
+                    } else {
+                        return { x: z.start, x2: z.end, fillColor: '#ef4444', opacity: 0.15, label: { text: 'Vùng Cảnh báo', style: { background: '#ef4444', color: '#fff', fontSize: '9px' } } };
+                    }
+                });
+
+                let tLow = tagName.toLowerCase();
+                let isIndependent = tLow.includes('mf-p') || tLow.includes('mf-q') || tLow.includes('tốc độ') || 
+                                    tLow.includes('điện áp') || tLow.includes('mf-u') || tLow.includes('mf-i') || 
+                                    tLow.includes('đz27') || tLow.includes('cos') || tLow.includes('mf-n') || 
+                                    tLow.includes('- p') || tLow.includes('- i') || tLow.includes('độ mở');
+                
+                let isStepLine = tLow.includes('số lần') || tLow.includes('số giờ');
+                let isDropToZero = isIndependent || tLow.includes('lưu lượng'); 
+                let isConnectDots = !isStepLine && !isDropToZero; 
+
+                if (isDropToZero) {
+                    act = act.map(v => v === null ? 0 : v);
+                    est = est.map(v => v === null ? 0 : v);
+                    for(let i=0; i<res.length; i++) { res[i] = parseFloat((act[i] - est[i]).toFixed(2)); }
+                } else if (isStepLine) {
+                    let lastA = 0, lastE = 0;
+                    act = act.map(v => { if(v !== null) lastA = v; return lastA; });
+                    est = est.map(v => { if(v !== null) lastE = v; return lastE; });
+                } else if (isConnectDots) {
+                    const interpolate = (arr) => {
+                        let result = [...arr];
+                        for (let i = 0; i < result.length; i++) {
+                            if (result[i] === null) {
+                                let pIdx = i - 1; while (pIdx >= 0 && result[pIdx] === null) pIdx--;
+                                let nIdx = i + 1; while (nIdx < result.length && result[nIdx] === null) nIdx++;
+                                
+                                let pVal = pIdx >= 0 ? result[pIdx] : null;
+                                let nVal = nIdx < result.length ? result[nIdx] : null;
+                                
+                                if (pVal !== null && nVal !== null) { result[i] = pVal + (nVal - pVal) * ((i - pIdx) / (nIdx - pIdx)); } 
+                                else if (pVal !== null) { result[i] = pVal; } 
+                                else if (nVal !== null) { result[i] = nVal; }
+                            }
+                        }
+                        return result;
+                    };
+                    act = interpolate(act);
+                    est = interpolate(est);
+                    for(let i=0; i<res.length; i++) {
+                        if(res[i] === null || res[i] === 0) { res[i] = (act[i] !== null && est[i] !== null) ? parseFloat((act[i] - est[i]).toFixed(2)) : 0; }
+                    }
+                }
+
+                if(isIndependent) {
+                    document.getElementById('res-overlay').classList.remove('hidden');
+                    document.getElementById('chart-max-res').innerText = "N/A";
+                    document.getElementById('chart-max-res').className = "text-lg kpi-value text-gray-600";
+                    document.getElementById('title-main-chart').innerText = "1. BIỂU ĐỒ THEO DÕI THÔNG SỐ ĐỘC LẬP (RAW DATA)";
+                } else {
+                    document.getElementById('res-overlay').classList.add('hidden');
+                    const validRes = res.filter(r => r !== null && r !== undefined);
+                    const maxR = validRes.length > 0 ? Math.max(...validRes.map(Math.abs)) : 0;
+                    const resEl = document.getElementById('chart-max-res');
+                    resEl.innerText = maxR.toFixed(2);
+                    resEl.className = `text-lg kpi-value ${maxR >= 3 ? 'text-red-500' : 'text-emerald-500'}`;
+                    document.getElementById('title-main-chart').innerText = "1. GIÁM SÁT ĐỘ LỆCH MÔ HÌNH AI (MODEL DEVIATION)";
+                }
+
+                let curveType = isStepLine ? 'stepline' : 'straight';
+
+                if (charts.main) charts.main.destroy();
+                if (charts.residual) charts.residual.destroy();
+
+                const commonOptions = {
+                    chart: { background: 'transparent', toolbar: { show: true }, animations: { enabled: false } },
+                    theme: { mode: 'dark' },
+                    tooltip: { theme: 'dark', shared: true, intersect: false, x: { formatter: (val, opts) => "Thời điểm: " + labels[opts.dataPointIndex] } },
+                    grid: { borderColor: '#1f2937', strokeDashArray: 2, padding: { top: 20, right: 10, bottom: 0, left: 10 } },
+                    dataLabels: { enabled: false }
+                };
+
+                charts.main = new ApexCharts(document.querySelector("#chart-main"), {
+                    ...commonOptions,
+                    series: [
+                        { name: 'Actual (Thực tế)', data: act }, 
+                        { name: 'Estimate (Mô hình)', data: est }
+                    ],
+                    chart: { ...commonOptions.chart, id: 'sync-main', group: 'apm', type: 'line', height: '100%' },
+                    colors: ['#3b82f6', '#10b981'], 
+                    stroke: { width: [2, 2], curve: curveType, dashArray: [0, 4] },
+                    annotations: { xaxis: xaxisAnnotations }, // Bật Highlight trên Web
+                    xaxis: { type: 'category', categories: labels, labels: { show: false }, axisBorder: { show: false }, tooltip: { enabled: false } },
+                    yaxis: { 
+                        min: function(min) { return min < 0 ? min * 1.15 : (min > 0 ? min * 0.85 : 0); }, 
+                        max: function(max) { return max > 0 ? max * 1.15 : (max < 0 ? max * 0.85 : 10); },
+                        labels: { style: { colors: '#9ca3af', fontFamily: 'Courier New' }, formatter: (val) => val.toFixed(2) } 
+                    },
+                    legend: { position: 'top', horizontalAlign: 'right', offsetY: -10, labels: { colors: '#d1d5db' }, markers: { radius: 0 } }
+                });
+
+                charts.residual = new ApexCharts(document.querySelector("#chart-residual"), {
+                    ...commonOptions,
+                    series: [{ name: 'Residual (Độ lệch)', data: res }],
+                    chart: { ...commonOptions.chart, id: 'sync-res', group: 'apm', type: 'bar', height: '100%' },
+                    colors: [({ value }) => Math.abs(value) >= 3.0 ? '#ef4444' : '#6b7280'],
+                    plotOptions: { bar: { columnWidth: '50%' } },
+                    xaxis: { type: 'category', categories: labels, labels: { show: true, style: { colors: '#6b7280', fontSize: '9px' }, hideOverlappingLabels: true }, tickAmount: 15 },
+                    yaxis: { 
+                        min: function(min) { return min < 0 ? min * 1.15 : 0; },
+                        max: function(max) { return max > 0 ? max * 1.15 : 0; },
+                        labels: { style: { colors: '#9ca3af', fontFamily: 'Courier New' }, formatter: (val) => val.toFixed(2) } 
+                    }
+                });
+
+                charts.main.render();
+                charts.residual.render();
+                debugLog.innerText = `Đã kết xuất biểu đồ.`;
+
+            } catch (err) {
+                debugLog.innerHTML = `<span class="text-red-500">LỖI VẼ BIỂU ĐỒ: ${err.message}</span>`;
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        async function openOverhaulModal() {
+            document.getElementById('overhaulModal').classList.remove('hidden');
+            document.getElementById('overhaulModal').classList.add('flex');
+            await renderRadar();
+        }
+        
+        function closeOverhaulModal() {
+            document.getElementById('overhaulModal').classList.add('hidden');
+            document.getElementById('overhaulModal').classList.remove('flex');
+        }
+
+        async function renderRadar() {
+            const unit = document.getElementById('ovhUnit').value;
+            const loader = document.getElementById('radar-loading');
+            const chartDiv = document.querySelector('#chart-radar');
+            const tableBody = document.getElementById('ovhTableBody');
+            
+            if (loader) loader.classList.remove('hidden');
+            if (charts.radar) { charts.radar.destroy(); charts.radar = null; }
+            if (chartDiv) chartDiv.innerHTML = '';
+            if (tableBody) tableBody.innerHTML = '';
+
+            try {
+                const { data, error } = await dbClient.from('view_overhaul_comparison').select('*').eq('unit_code', unit);
+                if (error) throw error;
+                if (!data || data.length === 0) {
+                    if (chartDiv) chartDiv.innerHTML = `<div class="h-full w-full flex flex-col items-center justify-center text-center px-4"><span class="text-3xl mb-2">⚠️</span><span class="text-gray-300 font-mono text-xs font-bold">KHÔNG TÌM THẤY DỮ LIỆU!</span></div>`;
+                    if (tableBody) tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 italic py-4">Trống dữ liệu</td></tr>`;
+                    return;
+                }
+
+                let validData = data.filter(item => item.current_value !== null);
+                if (validData.length === 0) {
+                    if (chartDiv) chartDiv.innerHTML = `<div class="h-full w-full flex items-center justify-center text-gray-500 font-mono text-xs">Chưa có dữ liệu thực tế cho ${unit}.</div>`;
+                    if (tableBody) tableBody.innerHTML = `<tr><td colspan="4" class="text-center text-gray-500 italic py-4">Trống dữ liệu</td></tr>`;
+                    return;
+                }
+
+                validData = validData.sort((a,b) => b.delta_value - a.delta_value); 
+
+                let labels = [], sDelta = [], tableHtml = '';
+                validData.forEach(item => {
+                    let shortName = item.tag_name.replace(/H[12] - /g, '');
+                    if (shortName.length > 40) shortName = shortName.substring(0, 37) + '..';
+                    
+                    labels.push(shortName);
+                    sDelta.push(item.delta_value);
+
+                    let delta = item.delta_value;
+                    let colorClass = delta > 1.5 ? 'text-red-500' : (delta < -1.5 ? 'text-[#10b981]' : 'text-gray-400');
+                    tableHtml += `<tr class="border-b border-[#1f2937] hover:bg-[#1f2937]">
+                        <td class="p-2 text-gray-300 text-[11px]" title="${item.tag_name}">${shortName}</td>
+                        <td class="p-2 text-[#10b981] font-mono">${item.baseline_value.toFixed(2)}</td>
+                        <td class="p-2 text-[#f59e0b] font-mono">${item.current_value.toFixed(2)}</td>
+                        <td class="p-2 ${colorClass} font-mono font-bold">${delta > 0 ? '+' : ''}${delta}</td>
+                    </tr>`;
+                });
+
+                if (tableBody) tableBody.innerHTML = tableHtml;
+
+                let chartHeight = validData.length * 25 + 80;
+                if(chartHeight < 400) chartHeight = 400; 
+                
+                const parentDiv = chartDiv.parentElement;
+                parentDiv.classList.remove('items-center', 'justify-center', 'flex');
+                parentDiv.classList.add('block', 'overflow-y-auto');
+                chartDiv.style.height = chartHeight + 'px';
+                
+                var options = {
+                    series: [{ name: 'Biến động', data: sDelta }],
+                    chart: { type: 'bar', height: chartHeight, width: '100%', background: 'transparent', toolbar: {show: false} },
+                    plotOptions: {
+                        bar: {
+                            horizontal: true,
+                            colors: {
+                                ranges: [
+                                    { from: -9999, to: -1.5, color: '#10b981' },
+                                    { from: -1.499, to: 1.5, color: '#6b7280' },
+                                    { from: 1.501, to: 9999, color: '#ef4444' }
+                                ]
+                            }
+                        }
+                    },
+                    dataLabels: { enabled: false },
+                    xaxis: { position: 'top', labels: { style: { colors: '#9ca3af' } } },
+                    yaxis: { labels: { style: { colors: '#d1d5db', fontSize: '10px' } } },
+                    grid: { borderColor: '#1f2937', strokeDashArray: 2 },
+                    theme: { mode: 'dark' },
+                    tooltip: { theme: 'dark' }
+                };
+
+                if (chartDiv) {
+                    charts.radar = new ApexCharts(chartDiv, options);
+                    charts.radar.render();
+                }
+
+            } catch(e) {
+                if (chartDiv) chartDiv.innerHTML = `<div class="text-red-500 p-4 font-mono text-xs">LỖI: ${e.message}</div>`;
+            } finally {
+                if (loader) loader.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
