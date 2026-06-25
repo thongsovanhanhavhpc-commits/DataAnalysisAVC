@@ -4,8 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AVC • Generating Unit Data Analysis</title>
+    <title>APM A Vương • Đăng nhập & Dashboard</title>
     
+    </div>
+
     <script>
         window.onerror = function(msg, url, line) {
             const log = document.getElementById('debug-log');
@@ -41,13 +43,156 @@
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.8; transition: 0.2s; }
         input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
         select option { background-color: #1f2937; color: #ffffff; font-weight: bold; }
+    
+        /* ===== Login layer ===== */
+        .login-shell {
+            min-height: 100vh;
+            background-color: var(--bg-base);
+            background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-base) 50%);
+        }
+        .login-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+        }
+        .login-shell input:not([type="date"]):not([type="checkbox"]) {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            color: white;
+            transition: all 0.2s;
+        }
+        .login-shell input:not([type="date"]):not([type="checkbox"]):focus {
+            border-color: var(--accent-blue);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+            background-color: #111827;
+        }
+        .login-shell input[type="checkbox"] {
+            appearance: none;
+            background-color: #1f2937;
+            margin: 0;
+            display: grid;
+            place-content: center;
+            border: 1px solid #4b5563;
+        }
+        .login-shell input[type="checkbox"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .login-shell input[type="checkbox"]:checked::before { transform: scale(1); }
+        .login-shell input[type="checkbox"]:checked {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
     </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden relative">
+<body class="overflow-hidden relative">
+
+    <div id="login-screen" class="login-shell min-h-screen flex items-center justify-center p-4">
+        <div class="login-panel w-full max-w-5xl rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col md:flex-row overflow-hidden relative z-10">
+            <div class="hidden md:flex md:w-5/12 bg-gradient-to-br from-blue-900/80 to-[#0a0e17] p-10 flex-col justify-between relative overflow-hidden border-r border-[#1f2937]">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-10">
+                        <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-lg font-bold text-blue-900 text-xl tracking-tighter">
+                            AV
+                        </div>
+                        <div class="font-bold text-xs tracking-[0.2em] text-blue-200 uppercase">
+                            THỦY ĐIỆN A VƯƠNG
+                        </div>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-5 leading-tight">Hệ Thống Quản Trị<br>Và Chẩn Đoán AI</h1>
+                    <p class="text-blue-200/70 text-sm leading-relaxed mb-6">
+                        Nền tảng Asset Performance Management (APM). Giám sát độ lệch mô hình, tự động gom nhóm sự kiện và chẩn đoán nguyên nhân gốc rễ.
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-blue-900/50 border border-blue-500/30 rounded text-[10px] text-blue-300 font-mono">Multivariate AI</span>
+                        <span class="px-2 py-1 bg-emerald-900/50 border border-emerald-500/30 rounded text-[10px] text-emerald-300 font-mono">Realtime Sync</span>
+                        <span class="px-2 py-1 bg-purple-900/50 border border-purple-500/30 rounded text-[10px] text-purple-300 font-mono">GE SmartSignal logic</span>
+                    </div>
+                </div>
+                <div class="relative z-10 text-[11px] text-blue-400/50 font-mono mt-12">
+                    Phiên bản V52.0 (Unified Login + Dashboard)<br>
+                    Engine: Random Forest Regression
+                </div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-600 rounded-full mix-blend-screen filter blur-[80px] opacity-30 animate-pulse"></div>
+                <div class="absolute top-1/4 -right-24 w-64 h-64 bg-indigo-600 rounded-full mix-blend-screen filter blur-[80px] opacity-20"></div>
+            </div>
+
+            <div class="w-full md:w-7/12 p-8 md:p-14 flex flex-col justify-center bg-[#111827]">
+                <div class="mb-10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="./asset/Logo.png" alt="Company Logo" class="h-12 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white mb-1">Đăng nhập hệ thống</h2>
+                            <p class="text-gray-400 text-sm">Vui lòng sử dụng tài khoản được cấp quyền để truy cập Data Center.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Tên đăng nhập / Email</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            </div>
+                            <input id="login-username" type="text" class="w-full pl-10 pr-4 py-3 rounded-lg text-sm" placeholder="VD: kisu_vandanh@avuong.vn" required>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider">Mật khẩu</label>
+                            <a href="#" class="text-xs text-blue-400 hover:text-blue-300 transition">Quên mật khẩu?</a>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </div>
+                            <input id="login-password" type="password" class="w-full pl-10 pr-4 py-3 rounded-lg text-sm tracking-widest" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="remember" class="w-4 h-4 rounded border-gray-600 cursor-pointer">
+                            <label for="remember" class="ml-3 text-sm text-gray-400 cursor-pointer select-none">Ghi nhớ phiên đăng nhập</label>
+                        </div>
+                        <div id="login-error" class="text-xs text-red-400 hidden"></div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-lg transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] flex justify-center items-center gap-2 mt-4">
+                        ĐĂNG NHẬP VÀO HỆ THỐNG
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </form>
+
+                <div class="mt-10 pt-6 border-t border-[#1f2937] flex items-center justify-between text-xs font-mono">
+                    <div class="flex items-center gap-2 text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="font-bold">Supabase: Online</span>
+                    </div>
+                    <div class="text-gray-500 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        End-to-End Encrypted
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-root" class="h-screen flex flex-col overflow-hidden relative hidden">
+
 
     <header class="bg-[#111827] border-b border-[#1f2937] p-3 flex justify-between items-center shrink-0 z-20">
         <div class="flex items-center gap-3">
-            <img src="https://lh3.googleusercontent.com/d/1XCl2AoNcouyrJC0Ht5bZtmZnghkzQE4G" alt="Company Logo" class="h-11 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
+            <img src="./asset/Logo.png" alt="Company Logo" class="h-11 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
             <div>
                 <h1 class="font-bold text-white text-sm tracking-wide uppercase">GENERATING UNIT DATA ANALYSIS</h1>
                 <div class="text-[10px] text-gray-400 uppercase tracking-widest">Asset Performance Management</div>
@@ -96,6 +241,9 @@
             </button>
             <button onclick="exportDiagPDF(true)" id="btn-pdf-main" class="bg-gray-700 hover:bg-gray-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-gray-600">
                 🖨️ XUẤT BÁO CÁO GE
+            </button>
+            <button onclick="logoutDashboard()" class="bg-red-700 hover:bg-red-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-red-500/40">
+                ĐĂNG XUẤT
             </button>
         </div>
     </header>
@@ -248,6 +396,71 @@
         let allDiagnosticsData = []; 
         let summaryHtmlPrint = ""; // Lưu trữ HTML ma trận để in
 
+        const LOGIN_STORAGE_KEY = 'avc_apm_session_v1';
+
+        function showLoginScreen() {
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('dashboard-root').classList.add('hidden');
+            document.body.classList.remove('h-screen', 'flex', 'flex-col');
+        }
+
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard-root').classList.remove('hidden');
+            document.body.classList.add('h-screen', 'flex', 'flex-col');
+        }
+
+        function handleLoginSubmit(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const errBox = document.getElementById('login-error');
+
+            if (!username || !password) {
+                errBox.textContent = 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.';
+                errBox.classList.remove('hidden');
+                return;
+            }
+
+            const sessionData = {
+                username,
+                loginAt: new Date().toISOString()
+            };
+
+            if (document.getElementById('remember').checked) {
+                localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(sessionData));
+            } else {
+                sessionStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(sessionData));
+            }
+
+            errBox.classList.add('hidden');
+            showDashboard();
+            setTimeout(() => { loadAllData(); }, 200);
+        }
+
+        function restoreSessionIfAny() {
+            const sessionRaw = localStorage.getItem(LOGIN_STORAGE_KEY) || sessionStorage.getItem(LOGIN_STORAGE_KEY);
+            if (sessionRaw) {
+                try {
+                    const session = JSON.parse(sessionRaw);
+                    if (session && session.username) {
+                        showDashboard();
+                        setTimeout(() => { loadAllData(); }, 200);
+                        return true;
+                    }
+                } catch (e) {}
+            }
+            showLoginScreen();
+            return false;
+        }
+
+        function logoutDashboard() {
+            localStorage.removeItem(LOGIN_STORAGE_KEY);
+            sessionStorage.removeItem(LOGIN_STORAGE_KEY);
+            document.getElementById('login-form').reset();
+            showLoginScreen();
+        }
+
         const orderLevel1_Tree = ['TỔ MÁY H1', 'TỔ MÁY H2', 'TRẠM PHÂN PHỐI 220KV', 'HỆ THỐNG TỰ DÙNG AC/DC', 'HỆ THỐNG THANH DẪN DÒNG', 'HỆ THỐNG ĐO LƯỜNG TI/TU', 'HỆ THỐNG KHÁC'];
         const orderLevel2_Tree = ['◈ ĐIỆN', '◈ CƠ KHÍ', '◈ NHIỆT ĐỘ', '◈ ÁP LỰC', '◈ LÀM MÁT / LƯU LƯỢNG', '◈ MỨC DẦU', '◈ KHÁC'];
         const diagOrderKeys = ['TỔ MÁY H1', 'TỔ MÁY H2', 'HỆ THỐNG CHUNG', 'HỆ THỐNG ĐO LƯỜNG TI/TU', 'HỆ THỐNG TỰ DÙNG AC/DC'];
@@ -289,7 +502,8 @@
             document.getElementById("endDate").value = fmt(today); 
             
             initDatabase();
-            setTimeout(() => { loadAllData(); }, 300);
+            document.getElementById('login-form').addEventListener('submit', handleLoginSubmit);
+            restoreSessionIfAny();
         });
 
         function quickSelectDate() {
@@ -672,12 +886,60 @@
                             .diag-fault-name { font-weight: bold; font-size: 14px; margin: 12px 0 6px 0; color: #111 !important; }
                             .diag-evidence { font-size: 13px; color: #444 !important; font-style: italic; line-height: 1.5; }
                             @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .diag-item-box, .diag-empty-box { page-break-inside: avoid; } }
-                        </style>
+                        
+        /* ===== Login layer ===== */
+        .login-shell {
+            min-height: 100vh;
+            background-color: var(--bg-base);
+            background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-base) 50%);
+        }
+        .login-panel {
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+        }
+        .login-shell input:not([type="date"]):not([type="checkbox"]) {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            color: white;
+            transition: all 0.2s;
+        }
+        .login-shell input:not([type="date"]):not([type="checkbox"]):focus {
+            border-color: var(--accent-blue);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+            background-color: #111827;
+        }
+        .login-shell input[type="checkbox"] {
+            appearance: none;
+            background-color: #1f2937;
+            margin: 0;
+            display: grid;
+            place-content: center;
+            border: 1px solid #4b5563;
+        }
+        .login-shell input[type="checkbox"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .login-shell input[type="checkbox"]:checked::before { transform: scale(1); }
+        .login-shell input[type="checkbox"]:checked {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+    </style>
                     </head>
                     <body>
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                             <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <img src="https://lh3.googleusercontent.com/d/1XCl2AoNcouyrJC0Ht5bZtmZnghkzQE4G" style="height: 40px; width: auto; object-fit: contain;" />
+                                <img src="./asset/Logo.png" style="height: 40px; width: auto; object-fit: contain;" />
                                 <div style="text-align: center; font-size: 13px; font-family: 'Times New Roman', Times, serif; color: #000; white-space: nowrap;">
                                     <div style="font-weight: normal; margin-bottom: 2px;">TỔNG CÔNG TY PHÁT ĐIỆN 2</div>
                                     <div style="font-weight: bold; text-decoration: underline;">CÔNG TY CP THỦY ĐIỆN A VƯƠNG</div>
