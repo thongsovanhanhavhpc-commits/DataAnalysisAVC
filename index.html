@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -7,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>APM A Vương • Đăng nhập & Dashboard</title>
     
-    </div>
-
     <script>
         window.onerror = function(msg, url, line) {
             const log = document.getElementById('debug-log');
             if(log) log.innerHTML = `<span class="text-red-500 font-bold">SYS_ERROR (Line ${line}): ${msg}</span>`;
+            console.error("Lỗi dòng " + line + ": " + msg);
         };
     </script>
 
@@ -91,7 +89,6 @@
             background-color: var(--accent-blue);
             border-color: var(--accent-blue);
         }
-
     </style>
 </head>
 <body class="overflow-hidden relative">
@@ -101,7 +98,7 @@
             <div class="hidden md:flex md:w-5/12 bg-gradient-to-br from-blue-900/80 to-[#0a0e17] p-10 flex-col justify-between relative overflow-hidden border-r border-[#1f2937]">
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-10">
-                        <img src="./asset/LogoSystem.png" alt="Data Analysis Logo" class="h-14 w-auto object-contain rounded-md shadow-lg">
+                        <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/LogoSystem.png" onerror="this.style.display='none'" alt="Data Analysis Logo" class="h-14 w-auto object-contain rounded-md shadow-lg">
                         <div class="font-bold text-xs tracking-[0.2em] text-blue-200 uppercase">
                             THỦY ĐIỆN A VƯƠNG
                         </div>
@@ -117,7 +114,7 @@
                     </div>
                 </div>
                 <div class="relative z-10 text-[11px] text-blue-400/50 font-mono mt-12">
-                    Phiên bản V52.0 (Unified Login + Dashboard)<br>
+                    Phiên bản V29.0 (GE Dashboard - Code Gốc)<br>
                     Engine: Random Forest Regression
                 </div>
                 <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-600 rounded-full mix-blend-screen filter blur-[80px] opacity-30 animate-pulse"></div>
@@ -127,7 +124,7 @@
             <div class="w-full md:w-7/12 p-8 md:p-14 flex flex-col justify-center bg-[#111827]">
                 <div class="mb-10">
                     <div class="flex items-center gap-3 mb-6">
-                        <img src="./asset/Logo.png" alt="Company Logo" class="h-12 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
+                        <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/Logo.png" onerror="this.style.display='none'" alt="Company Logo" class="h-12 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
                         <div>
                             <h2 class="text-2xl font-bold text-white mb-1">Đăng nhập hệ thống</h2>
                             <p class="text-gray-400 text-sm">Vui lòng sử dụng tài khoản được cấp quyền để truy cập Data Center.</p>
@@ -188,10 +185,9 @@
 
     <div id="dashboard-root" class="h-screen flex flex-col overflow-hidden relative hidden">
 
-
     <header class="bg-[#111827] border-b border-[#1f2937] p-3 flex justify-between items-center shrink-0 z-20">
         <div class="flex items-center gap-3">
-            <img src="./asset/Logo.png" alt="Company Logo" class="h-11 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
+            <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/Logo.png" onerror="this.style.display='none'" alt="Company Logo" class="h-11 w-auto object-contain bg-white p-1 rounded-md shadow-sm">
             <div>
                 <h1 class="font-bold text-white text-sm tracking-wide uppercase">GENERATING UNIT DATA ANALYSIS</h1>
                 <div class="text-[10px] text-gray-400 uppercase tracking-widest">Asset Performance Management</div>
@@ -238,7 +234,7 @@
             <button onclick="loadAllData()" id="btn-load" class="bg-[#2563eb] hover:bg-[#1d4ed8] px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg">
                 TẢI SỐ LIỆU (SYNC)
             </button>
-            <button onclick="exportDiagPDF(true)" id="btn-pdf-main" class="bg-gray-700 hover:bg-gray-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-gray-600">
+            <button onclick="exportDiagPDF(true)" id="btn-pdf-main" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-1.5 text-[11px] font-bold text-white rounded transition border border-emerald-500/40">
                 🖨️ XUẤT BÁO CÁO GE
             </button>
             <button onclick="logoutDashboard()" class="bg-red-700 hover:bg-red-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-red-500/40">
@@ -370,8 +366,7 @@
                 <button onclick="closeDiagnostics()" class="text-gray-400 hover:text-white text-2xl leading-none">×</button>
             </div>
             
-            <div id="diagList" class="p-4 overflow-y-auto flex-1 flex flex-col gap-3">
-                </div>
+            <div id="diagList" class="p-4 overflow-y-auto flex-1 flex flex-col gap-3"></div>
             
             <div id="diagModalFooter" class="bg-[#1f2937]/50 p-3 flex justify-between items-center border-t border-[#374151]">
                 <button onclick="exportDiagPDF(false)" id="btn-diag-pdf" class="px-4 py-2 bg-[#059669] hover:bg-[#047857] text-white text-[11px] font-medium rounded transition flex items-center gap-2">
@@ -384,7 +379,7 @@
         </div>
     </div>
 
-    <div id="hidden-render-zone" style="position: absolute; top: 0; left: -9999px; width: 850px; background: white; z-index: -1;"></div>
+    <div id="hidden-render-zone" style="position: absolute; top: 0; left: -9999px; width: 1000px; background: white; z-index: -1;"></div>
 
     <script>
         let dbClient = null;
@@ -393,7 +388,7 @@
         let rawTagsData = [];
         let tagCategories = {};
         let allDiagnosticsData = []; 
-        let summaryHtmlPrint = ""; // Lưu trữ HTML ma trận để in
+        let summaryHtmlPrint = ""; 
 
         const LOGIN_STORAGE_KEY = 'avc_apm_session_v1';
 
@@ -421,17 +416,12 @@
                 return;
             }
 
-            const sessionData = {
-                username,
-                loginAt: new Date().toISOString()
-            };
-
+            const sessionData = { username, loginAt: new Date().toISOString() };
             if (document.getElementById('remember').checked) {
                 localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(sessionData));
             } else {
                 sessionStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify(sessionData));
             }
-
             errBox.classList.add('hidden');
             showDashboard();
             setTimeout(() => { loadAllData(); }, 200);
@@ -624,7 +614,6 @@
                 badge.innerText = allDiagnosticsData.length;
                 badge.classList.remove('hidden');
                 
-                // Render Ma trận Sức khỏe
                 let html = buildSubsystemSummary(allDiagnosticsData);
 
                 html += `<h3 class="text-white text-[14px] font-bold border-b border-[#374151] pb-2 mb-3 tracking-wide uppercase">II. DANH SÁCH CẢNH BÁO CHI TIẾT</h3>`;
@@ -704,13 +693,102 @@
         async function openDiagnostics() { await fetchDiagnostics(); document.getElementById('diagModal').classList.remove('hidden'); document.getElementById('diagModal').classList.add('flex'); }
         function closeDiagnostics() { document.getElementById('diagModal').classList.add('hidden'); document.getElementById('diagModal').classList.remove('flex'); }
 
+
         // =======================================================================================
-        // PHƯƠNG PHÁP XUẤT PDF MỚI (BẢN V23) - MA TRẬN SỨC KHỎE + HIGHLIGHT ĐỎ + CAPTION
+        // HELPER FUNCTIONS ĐỂ CHUẨN BỊ DỮ LIỆU IN PDF (Tích hợp Auto-Interpolate từ Web)
+        // =======================================================================================
+        
+        async function renderChartToBase64(options, containerId) {
+            let div = document.createElement('div');
+            div.style.width = '1000px'; 
+            div.style.height = options.chart.height + 'px';
+            document.getElementById(containerId).appendChild(div);
+
+            let chart = new ApexCharts(div, options);
+            await chart.render();
+            await new Promise(r => setTimeout(r, 600)); 
+            let uri = await chart.dataURI();
+            chart.destroy();
+            div.remove();
+            return uri.imgURI;
+        }
+
+        const interpolateArray = (arr) => {
+            let result = [...arr];
+            for (let i = 0; i < result.length; i++) {
+                if (result[i] === null) {
+                    let pIdx = i - 1; while (pIdx >= 0 && result[pIdx] === null) pIdx--;
+                    let nIdx = i + 1; while (nIdx < result.length && result[nIdx] === null) nIdx++;
+                    let pVal = pIdx >= 0 ? result[pIdx] : null;
+                    let nVal = nIdx < result.length ? result[nIdx] : null;
+                    if (pVal !== null && nVal !== null) result[i] = pVal + (nVal - pVal) * ((i - pIdx) / (nIdx - pIdx));
+                    else if (pVal !== null) result[i] = pVal;
+                    else if (nVal !== null) result[i] = nVal;
+                }
+            }
+            return result;
+        };
+
+        function getGEStackedChartConfig(labels, pData, qData, nData) {
+            const commonX = { categories: labels, labels: { show: false }, axisTicks: {show: false}, tooltip: {enabled: false} };
+            const commonChart = { type: 'line', width: 950, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' };
+
+            let optP = {
+                series: [{ name: 'ACTIVE POWER', data: pData }],
+                chart: { ...commonChart, height: 160 },
+                colors: ['#1e40af'], stroke: { width: 1.5, curve: 'stepline' },
+                xaxis: commonX,
+                yaxis: { title: { text: '[MW]', style: { fontSize: '10px', color: '#000' } }, labels: { style: { colors: '#000' }, formatter: val => val!==null?val.toFixed(0):'' }, min: 0 },
+                grid: { borderColor: '#e5e7eb', padding: { top: 0, bottom: 0 } },
+                dataLabels: { enabled: false }, legend: { show: false }
+            };
+
+            let optN = {
+                series: [{ name: 'SPEED', data: nData }],
+                chart: { ...commonChart, height: 160 },
+                colors: ['#059669'], stroke: { width: 1.5, curve: 'stepline' },
+                xaxis: commonX,
+                yaxis: { title: { text: '[rpm]', style: { fontSize: '10px', color: '#000' } }, labels: { style: { colors: '#000' }, formatter: val => val!==null?val.toFixed(0):'' }, min: 0 },
+                grid: { borderColor: '#e5e7eb', padding: { top: 0, bottom: 0 } },
+                dataLabels: { enabled: false }, legend: { show: false }
+            };
+
+            let optQ = {
+                series: [{ name: 'REACTIVE POWER', data: qData }],
+                chart: { ...commonChart, height: 180 },
+                colors: ['#7c3aed'], stroke: { width: 1.5, curve: 'stepline' },
+                xaxis: { categories: labels, tickAmount: 10, labels: { rotate: -45, style: { fontSize: '9px', colors: '#000' } } },
+                yaxis: { title: { text: '[MVAR]', style: { fontSize: '10px', color: '#000' } }, labels: { style: { colors: '#000' }, formatter: val => val!==null?val.toFixed(0):'' } },
+                grid: { borderColor: '#e5e7eb', padding: { top: 0, bottom: 10 } },
+                dataLabels: { enabled: false }, legend: { show: false }
+            };
+
+            return [optP, optN, optQ];
+        }
+
+        function getTempGroupChartConfig(labels, aData, bData, cData) {
+            return {
+                series: [
+                    { name: 'Pha A', data: aData }, { name: 'Pha B', data: bData }, { name: 'Pha C', data: cData }
+                ],
+                chart: { type: 'line', height: 250, width: 950, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
+                colors: ['#dc2626', '#d97706', '#2563eb'],
+                stroke: { width: 2, curve: 'smooth' },
+                xaxis: { categories: labels, tickAmount: 10, labels: { rotate: -45, style: { fontSize: '9px', colors: '#000' } } },
+                yaxis: { title: { text: 'Nhiệt độ [°C]', style: { fontSize: '10px', color: '#000' } }, labels: { style: { colors: '#000' }, formatter: val => val!==null?val.toFixed(1):'' } },
+                grid: { borderColor: '#e5e7eb' },
+                dataLabels: { enabled: false },
+                legend: { position: 'top', fontSize: '12px' }
+            };
+        }
+
+
+        // =======================================================================================
+        // PHƯƠNG PHÁP XUẤT PDF MỚI (BẢN V29 + FIX LỖI API 1000 ROWS + AUTO-ZERO)
         // =======================================================================================
         async function exportDiagPDF(isQuickPrint = false) {
             const btn = isQuickPrint ? document.getElementById('btn-pdf-main') : document.getElementById('btn-diag-pdf');
             const originalText = btn.innerHTML;
-            btn.innerHTML = '⏳ ĐANG RENDER BIỂU ĐỒ BÁO CÁO...';
             btn.disabled = true;
 
             try {
@@ -722,8 +800,110 @@
                 const eD = eD_raw.split('-').reverse().join('/');
                 const printDateStr = new Date().toLocaleDateString('vi-VN').replace(/\//g, '');
                 const docTitle = `${printDateStr}_Bao_cao_phan_tich_APM_AVC`;
+                const tempZone = document.getElementById('hidden-render-zone');
+                tempZone.innerHTML = ''; 
 
-                // Bóc tách tag để vẽ biểu đồ và gán Caption
+                // ==========================================================
+                // PHẦN 1: BATCH FETCH & RENDER OPERATION OVERVIEW
+                // ==========================================================
+                btn.innerHTML = '⏳ ĐANG TỔNG HỢP TOÀN CẢNH VẬN HÀNH...';
+                const overviewTags = [
+                    "H1 - MF-P", "H1 - MF-Q", "H1 - MF-n", "H1 - Tuabin - Tốc độ",
+                    "H2 - MF-P", "H2 - MF-Q", "H2 - MF-n", "H2 - Tuabin - Tốc độ",
+                    "Nhiệt độ TU-C24B pha A", "Nhiệt độ TU-C24B pha B", "Nhiệt độ TU-C24B pha C",
+                    "TE1 - Nhiệt độ pha A", "TE1 - Nhiệt độ pha B", "TE1 - Nhiệt độ pha C"
+                ];
+
+                let rawDataMap = {};
+                // Tránh lỗi timezone JS khi khởi tạo Date
+                let dCurr = new Date(sD_raw);
+                while (dCurr <= new Date(eD_raw)) {
+                    let y = dCurr.getFullYear();
+                    let m = String(dCurr.getMonth() + 1).padStart(2, '0');
+                    let dd = String(dCurr.getDate()).padStart(2, '0');
+                    let dStr = `${y}-${m}-${dd}`;
+                    for (let i = 1; i <= 24; i++) {
+                        let key = `${dStr}_${i.toString().padStart(2, '0')}`;
+                        let lbl = `${dd}/${m} ${i}h`;
+                        rawDataMap[key] = { label: lbl, vals: {} };
+                    }
+                    dCurr.setDate(dCurr.getDate() + 1);
+                }
+
+                // Sửa lỗi Pagination: Hạ step xuống 1000 để Supabase không chặn query
+                let from = 0; const step = 1000; let fetchMore = true;
+                while(fetchMore) {
+                    const { data: batchData, error } = await dbClient.from('op_predicted_metrics')
+                        .select('tag_name, actual_value, time_mark, op_daily_reports!inner(report_date)')
+                        .in('tag_name', overviewTags).gte('op_daily_reports.report_date', sD_raw).lte('op_daily_reports.report_date', eD_raw)
+                        .range(from, from + step - 1);
+                        
+                    if (batchData && batchData.length > 0) {
+                        batchData.forEach(r => {
+                            let hNum = parseInt(r.time_mark.replace(/\D/g, '')) || 0;
+                            // Đảm bảo mapping đúng key
+                            let repDate = r.op_daily_reports.report_date; 
+                            let k = `${repDate}_${hNum.toString().padStart(2, '0')}`;
+                            if (rawDataMap[k]) rawDataMap[k].vals[r.tag_name] = r.actual_value;
+                        });
+                        if (batchData.length < step) fetchMore = false; else from += step;
+                    } else fetchMore = false;
+                }
+
+                let ovLabels = [], h1P = [], h1Q = [], h1N = [], h2P = [], h2Q = [], h2N = [], tuA = [], tuB = [], tuC = [], teA = [], teB = [], teC = [];
+                Object.keys(rawDataMap).sort().forEach(k => {
+                    let d = rawDataMap[k].vals;
+                    ovLabels.push(rawDataMap[k].label);
+                    
+                    // Cơ chế Fill số 0 cho P,Q,N giống hệt bản Dashboard Web
+                    h1P.push(d['H1 - MF-P'] ?? 0); 
+                    h1Q.push(d['H1 - MF-Q'] ?? 0); 
+                    h1N.push(d['H1 - Tuabin - Tốc độ'] ?? d['H1 - MF-n'] ?? 0);
+                    
+                    h2P.push(d['H2 - MF-P'] ?? 0); 
+                    h2Q.push(d['H2 - MF-Q'] ?? 0); 
+                    h2N.push(d['H2 - Tuabin - Tốc độ'] ?? d['H2 - MF-n'] ?? 0);
+                    
+                    tuA.push(d['Nhiệt độ TU-C24B pha A'] ?? null); 
+                    tuB.push(d['Nhiệt độ TU-C24B pha B'] ?? null); 
+                    tuC.push(d['Nhiệt độ TU-C24B pha C'] ?? null);
+                    
+                    teA.push(d['TE1 - Nhiệt độ pha A'] ?? null); 
+                    teB.push(d['TE1 - Nhiệt độ pha B'] ?? null); 
+                    teC.push(d['TE1 - Nhiệt độ pha C'] ?? null);
+                });
+
+                // Nội suy liền mạch mảng nhiệt độ
+                tuA = interpolateArray(tuA); tuB = interpolateArray(tuB); tuC = interpolateArray(tuC);
+                teA = interpolateArray(teA); teB = interpolateArray(teB); teC = interpolateArray(teC);
+
+                btn.innerHTML = '⏳ ĐANG VẼ BIỂU ĐỒ STACKED (GE STYLE)...';
+                let overviewChartImagesHtml = '';
+                
+                const cfgsH1 = getGEStackedChartConfig(ovLabels, h1P, h1Q, h1N);
+                const imgH1P = await renderChartToBase64(cfgsH1[0], 'hidden-render-zone');
+                const imgH1N = await renderChartToBase64(cfgsH1[1], 'hidden-render-zone');
+                const imgH1Q = await renderChartToBase64(cfgsH1[2], 'hidden-render-zone');
+                overviewChartImagesHtml += `<div style="border: 1px solid #000; margin-bottom: 20px;"><div style="background:#1e3a8a; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">TỔ MÁY H1 - OPERATION PROFILE</div><img src="${imgH1P}" style="display:block; width:100%; border-bottom: 1px dashed #ccc;" /><img src="${imgH1N}" style="display:block; width:100%; border-bottom: 1px dashed #ccc;" /><img src="${imgH1Q}" style="display:block; width:100%;" /></div>`;
+
+                const cfgsH2 = getGEStackedChartConfig(ovLabels, h2P, h2Q, h2N);
+                const imgH2P = await renderChartToBase64(cfgsH2[0], 'hidden-render-zone');
+                const imgH2N = await renderChartToBase64(cfgsH2[1], 'hidden-render-zone');
+                const imgH2Q = await renderChartToBase64(cfgsH2[2], 'hidden-render-zone');
+                overviewChartImagesHtml += `<div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;"><div style="background:#1e3a8a; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">TỔ MÁY H2 - OPERATION PROFILE</div><img src="${imgH2P}" style="display:block; width:100%; border-bottom: 1px dashed #ccc;" /><img src="${imgH2N}" style="display:block; width:100%; border-bottom: 1px dashed #ccc;" /><img src="${imgH2Q}" style="display:block; width:100%;" /></div>`;
+
+                const cfgTU = getTempGroupChartConfig(ovLabels, tuA, tuB, tuC);
+                const imgTU = await renderChartToBase64(cfgTU, 'hidden-render-zone');
+                overviewChartImagesHtml += `<div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;"><div style="background:#4b5563; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">NHIỆT ĐỘ MÁY BIẾN ĐIỆN ÁP (Đại diện: TU-C24B)</div><img src="${imgTU}" style="display:block; width:100%;" /></div>`;
+
+                const cfgTE = getTempGroupChartConfig(ovLabels, teA, teB, teC);
+                const imgTE = await renderChartToBase64(cfgTE, 'hidden-render-zone');
+                overviewChartImagesHtml += `<div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;"><div style="background:#4b5563; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">NHIỆT ĐỘ THANH DẪN DÒNG (Đại diện: TE1)</div><img src="${imgTE}" style="display:block; width:100%;" /></div>`;
+
+
+                // ==========================================================
+                // PHẦN 2: LÕI XỬ LÝ EVIDENCES 
+                // ==========================================================
                 let tagsToDrawMap = new Map();
                 allDiagnosticsData.forEach(d => {
                     let parts = (d.fault_name || "").split(' - ');
@@ -743,12 +923,10 @@
                 let tagsArray = Array.from(tagsToDrawMap.keys());
 
                 let chartImagesHtml = '';
-                const tempZone = document.getElementById('hidden-render-zone');
-                tempZone.innerHTML = ''; 
 
                 if(tagsArray.length > 0) {
                     chartImagesHtml += `<div style="page-break-before: always; margin-top: 30px;"></div>`; 
-                    chartImagesHtml += `<h3 style="font-size: 16px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 17px; text-transform: uppercase;">III. BIỂU ĐỒ CHỨNG MINH LỖI (EVIDENCES)</h3>`;
+                    chartImagesHtml += `<h3 style="font-size: 16px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 17px; text-transform: uppercase;">IV. BIỂU ĐỒ CHỨNG MINH LỖI (EVIDENCES)</h3>`;
                     chartImagesHtml += `<p style="font-size: 12px; font-style: italic; color: #555; margin-bottom: 20px;">* Vùng bôi đỏ là thời điểm phát hiện bất thường. Đường xanh lá (AI) vs Đường đỏ (Thực tế).</p>`;
                 }
 
@@ -775,7 +953,29 @@
                         let act = cleanData.map(d => d.actual_value);
                         let est = cleanData.map(d => d.estimated_value);
 
-                        // TÍNH NĂNG MỚI: Tính toán vùng Highlight báo lỗi (Anomaly Zones)
+                        // Kế thừa thuật toán Zeroing/Interpolate chuẩn của V25 để chống đứt nét
+                        let tLow = tag.toLowerCase();
+                        let isIndependent = tLow.includes('mf-p') || tLow.includes('mf-q') || tLow.includes('tốc độ') || 
+                                            tLow.includes('điện áp') || tLow.includes('mf-u') || tLow.includes('mf-i') || 
+                                            tLow.includes('đz27') || tLow.includes('cos') || tLow.includes('mf-n') || 
+                                            tLow.includes('- p') || tLow.includes('- i') || tLow.includes('độ mở');
+                        
+                        let isStepLine = tLow.includes('số lần') || tLow.includes('số giờ');
+                        let isDropToZero = isIndependent || tLow.includes('lưu lượng'); 
+                        let isConnectDots = !isStepLine && !isDropToZero; 
+
+                        if (isDropToZero) {
+                            act = act.map(v => v === null ? 0 : v);
+                            est = est.map(v => v === null ? 0 : v);
+                        } else if (isStepLine) {
+                            let lastA = 0, lastE = 0;
+                            act = act.map(v => { if(v !== null) lastA = v; return lastA; });
+                            est = est.map(v => { if(v !== null) lastE = v; return lastE; });
+                        } else if (isConnectDots) {
+                            act = interpolateArray(act);
+                            est = interpolateArray(est);
+                        }
+
                         let zones = [];
                         let startX = null; let endX = null;
                         for (let j = 0; j < cleanData.length; j++) {
@@ -803,18 +1003,20 @@
                         tempChartDiv.style.height = '320px';
                         tempZone.appendChild(tempChartDiv);
 
+                        let curveType = isStepLine ? 'stepline' : 'straight';
+
                         let options = {
                             series: [{ name: 'Thực tế', data: act }, { name: 'AI Dự đoán', data: est }],
                             chart: { type: 'line', height: 320, width: 850, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
                             colors: ['#dc2626', '#10b981'],
-                            stroke: { width: [2, 2], curve: 'straight', dashArray: [0, 4] },
-                            annotations: { xaxis: xaxisAnnotations }, // Nhúng highlight vào biểu đồ
+                            stroke: { width: [2, 2], curve: curveType, dashArray: [0, 4] },
+                            annotations: { xaxis: xaxisAnnotations },
                             xaxis: { 
                                 categories: labels, 
                                 labels: { show: true, rotate: -45, hideOverlappingLabels: true, style: { colors: '#374151', fontSize: '9px' } },
                                 tickAmount: 12, tooltip: { enabled: false } 
                             },
-                            yaxis: { labels: { style: { colors: '#000', fontSize: '11px' }, formatter: (val) => val.toFixed(1) } },
+                            yaxis: { labels: { style: { colors: '#000', fontSize: '11px' }, formatter: (val) => val!==null ? val.toFixed(1) : '' } },
                             legend: { position: 'top', fontSize: '12px', markers: { radius: 0 } },
                             dataLabels: { enabled: false },
                             grid: { padding: { bottom: 15 } }
@@ -823,12 +1025,10 @@
                         let chart = new ApexCharts(tempChartDiv, options);
                         await chart.render();
                         
-                        await new Promise(r => setTimeout(r, 1000));
+                        await new Promise(r => setTimeout(r, 600));
                         const uri = await chart.dataURI();
                         
-                        // Lấy text Caption (RCA)
                         let rawCaption = tagsToDrawMap.get(tag) || "";
-                        // Format lại caption cho đẹp khi in PDF
                         let formattedCaption = rawCaption.replace(/<br>/g, ' ').replace(/<span.*?>/g, '').replace(/<\/span>/g, '').replace(/🔍/g, '•').replace(/💡/g, '•');
 
                         chartImagesHtml += `
@@ -848,10 +1048,9 @@
 
                 btn.innerHTML = '⏳ ĐANG TẠO BẢN IN PDF...';
                 
-                // Trích xuất list cảnh báo (Bỏ đi thẻ Tóm Tắt Web ban đầu)
                 let diagListEl = document.getElementById('diagList').cloneNode(true);
                 if(diagListEl.firstElementChild && diagListEl.firstElementChild.tagName === 'DIV') {
-                    diagListEl.removeChild(diagListEl.firstElementChild); // Bỏ cái ma trận của Web đi để xài ma trận in
+                    diagListEl.removeChild(diagListEl.firstElementChild); 
                 }
                 let eventListHtml = diagListEl.innerHTML;
                 
@@ -885,60 +1084,16 @@
                             .diag-fault-name { font-weight: bold; font-size: 14px; margin: 12px 0 6px 0; color: #111 !important; }
                             .diag-evidence { font-size: 13px; color: #444 !important; font-style: italic; line-height: 1.5; }
                             @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } .diag-item-box, .diag-empty-box { page-break-inside: avoid; } }
-                        
-        /* ===== Login layer ===== */
-        .login-shell {
-            min-height: 100vh;
-            background-color: var(--bg-base);
-            background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-base) 50%);
-        }
-        .login-panel {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-        }
-        .login-shell input:not([type="date"]):not([type="checkbox"]) {
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            color: white;
-            transition: all 0.2s;
-        }
-        .login-shell input:not([type="date"]):not([type="checkbox"]):focus {
-            border-color: var(--accent-blue);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
-            background-color: #111827;
-        }
-        .login-shell input[type="checkbox"] {
-            appearance: none;
-            background-color: #1f2937;
-            margin: 0;
-            display: grid;
-            place-content: center;
-            border: 1px solid #4b5563;
-        }
-        .login-shell input[type="checkbox"]::before {
-            content: "";
-            width: 0.65em;
-            height: 0.65em;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em white;
-            background-color: white;
-            transform-origin: bottom left;
-            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-        }
-        .login-shell input[type="checkbox"]:checked::before { transform: scale(1); }
-        .login-shell input[type="checkbox"]:checked {
-            background-color: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-    </style>
+                        </style>
                     </head>
                     <body>
+                        <div style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 0;">
+                            <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/WaterMark.png" onerror="this.style.display='none'" style="width: 68%; max-width: 760px; opacity: 0.055;" />
+                        </div>
+                        <div style="position: relative; z-index: 1;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                             <div style="display: flex; align-items: flex-start; gap: 12px;">
-                                <img src="./asset/Logo.png" style="height: 40px; width: auto; object-fit: contain;" />
+                                <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/Logo.png" onerror="this.style.display='none'" style="height: 40px; width: auto; object-fit: contain;" />
                                 <div style="text-align: center; font-size: 13px; font-family: 'Times New Roman', Times, serif; color: #000; white-space: nowrap;">
                                     <div style="font-weight: normal; margin-bottom: 2px;">TỔNG CÔNG TY PHÁT ĐIỆN 2</div>
                                     <div style="font-weight: bold; text-decoration: underline;">CÔNG TY CP THỦY ĐIỆN A VƯƠNG</div>
@@ -955,13 +1110,20 @@
                             <p style="font-size: 14px; font-style: italic; margin-top: 8px; color: #333;">Giai đoạn phân tích: Từ ${sD} đến ${eD}</p>
                         </div>
                         
-                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase;">I. MA TRẬN SỨC KHỎE TỔNG THỂ</h3>
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase;">I. TOÀN CẢNH VẬN HÀNH THÁNG (OPERATION OVERVIEW)</h3>
+                        <div style="font-size:12px; font-style:italic; color:#666; margin-bottom:15px;">* Biểu đồ thể hiện sự tương quan trực tiếp giữa Công suất phát, Tốc độ tuabin và các thông số Đo lường/Thanh dẫn dòng trong tháng.</div>
+                        ${overviewChartImagesHtml}
+
+                        <div style="page-break-before: always;"></div>
+
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">II. MA TRẬN SỨC KHỎE TỔNG THỂ</h3>
                         ${summaryHtmlPrint}
 
-                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">II. DANH SÁCH SỰ KIỆN CHI TIẾT</h3>
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">III. DANH SÁCH SỰ KIỆN CHI TIẾT</h3>
                         ${eventListHtml}
                         
                         ${chartImagesHtml}
+                        </div>
                     </body>
                     </html>
                 `);
@@ -1129,12 +1291,18 @@
                 }
 
                 let cleanMap = {};
-                for (let d = new Date(startDate); d <= new Date(endDate); d.setDate(d.getDate() + 1)) {
-                    let dStr = d.toISOString().split('T')[0];
+                // Sửa lỗi timezone khởi tạo Date
+                let dCurr = new Date(startDate);
+                while (dCurr <= new Date(endDate)) {
+                    let y = dCurr.getFullYear();
+                    let m = String(dCurr.getMonth() + 1).padStart(2, '0');
+                    let dd = String(dCurr.getDate()).padStart(2, '0');
+                    let dStr = `${y}-${m}-${dd}`;
                     for (let i = 1; i <= 24; i++) {
                         let key = `${dStr}_${i.toString().padStart(2, '0')}`;
                         cleanMap[key] = { time_mark: `${i}h`, op_daily_reports: { report_date: dStr }, actual_value: null, estimated_value: null, residual_value: 0, is_anomaly: false };
                     }
+                    dCurr.setDate(dCurr.getDate() + 1);
                 }
 
                 data.forEach(d => {
@@ -1154,7 +1322,6 @@
                 let est = cleanData.map(d => d.estimated_value);
                 let res = cleanData.map(d => d.residual_value);
 
-                // TÍNH TOÁN HIGHLIGHT CHO BIỂU ĐỒ CHÍNH TRÊN WEB
                 let zones = [];
                 let startX = null; let endX = null;
                 for (let j = 0; j < cleanData.length; j++) {
@@ -1196,25 +1363,8 @@
                     act = act.map(v => { if(v !== null) lastA = v; return lastA; });
                     est = est.map(v => { if(v !== null) lastE = v; return lastE; });
                 } else if (isConnectDots) {
-                    const interpolate = (arr) => {
-                        let result = [...arr];
-                        for (let i = 0; i < result.length; i++) {
-                            if (result[i] === null) {
-                                let pIdx = i - 1; while (pIdx >= 0 && result[pIdx] === null) pIdx--;
-                                let nIdx = i + 1; while (nIdx < result.length && result[nIdx] === null) nIdx++;
-                                
-                                let pVal = pIdx >= 0 ? result[pIdx] : null;
-                                let nVal = nIdx < result.length ? result[nIdx] : null;
-                                
-                                if (pVal !== null && nVal !== null) { result[i] = pVal + (nVal - pVal) * ((i - pIdx) / (nIdx - pIdx)); } 
-                                else if (pVal !== null) { result[i] = pVal; } 
-                                else if (nVal !== null) { result[i] = nVal; }
-                            }
-                        }
-                        return result;
-                    };
-                    act = interpolate(act);
-                    est = interpolate(est);
+                    act = interpolateArray(act);
+                    est = interpolateArray(est);
                     for(let i=0; i<res.length; i++) {
                         if(res[i] === null || res[i] === 0) { res[i] = (act[i] !== null && est[i] !== null) ? parseFloat((act[i] - est[i]).toFixed(2)) : 0; }
                     }
@@ -1257,12 +1407,12 @@
                     chart: { ...commonOptions.chart, id: 'sync-main', group: 'apm', type: 'line', height: '100%' },
                     colors: ['#3b82f6', '#10b981'], 
                     stroke: { width: [2, 2], curve: curveType, dashArray: [0, 4] },
-                    annotations: { xaxis: xaxisAnnotations }, // Bật Highlight trên Web
+                    annotations: { xaxis: xaxisAnnotations }, 
                     xaxis: { type: 'category', categories: labels, labels: { show: false }, axisBorder: { show: false }, tooltip: { enabled: false } },
                     yaxis: { 
                         min: function(min) { return min < 0 ? min * 1.15 : (min > 0 ? min * 0.85 : 0); }, 
                         max: function(max) { return max > 0 ? max * 1.15 : (max < 0 ? max * 0.85 : 10); },
-                        labels: { style: { colors: '#9ca3af', fontFamily: 'Courier New' }, formatter: (val) => val.toFixed(2) } 
+                        labels: { style: { colors: '#9ca3af', fontFamily: 'Courier New' }, formatter: (val) => val!==null?val.toFixed(2):'' } 
                     },
                     legend: { position: 'top', horizontalAlign: 'right', offsetY: -10, labels: { colors: '#d1d5db' }, markers: { radius: 0 } }
                 });
@@ -1277,7 +1427,7 @@
                     yaxis: { 
                         min: function(min) { return min < 0 ? min * 1.15 : 0; },
                         max: function(max) { return max > 0 ? max * 1.15 : 0; },
-                        labels: { style: { colors: '#9ca3af', fontFamily: 'Courier New' }, formatter: (val) => val.toFixed(2) } 
+                        labels: { style: { colors: '#9ca3af', fontFamily: 'Courier New' }, formatter: (val) => val!==null?val.toFixed(2):'' } 
                     }
                 });
 
