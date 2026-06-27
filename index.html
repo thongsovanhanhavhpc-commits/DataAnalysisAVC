@@ -31,64 +31,25 @@
         
         .panel { background-color: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 6px; }
         
-        .tree-header { padding: 12px 14px; font-size: 11px; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.05em; background: #1f2937; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3b82f6; cursor: pointer; transition: 0.2s;}
+        .tree-header { padding: 12px 14px; font-size: 11px; font-weight: 700; color: #e5e7eb; text-transform: uppercase; background: #1f2937; margin-top: 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #3b82f6; cursor: pointer; transition: 0.2s;}
         .tree-header:hover { background: #374151; }
         .tree-group-lvl-2 { font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase; padding: 12px 14px 4px 20px; letter-spacing: 1px; display: flex; justify-content: space-between;}
         .tree-item { cursor: pointer; padding: 8px 12px 8px 24px; font-size: 13px; color: #d1d5db; border-left: 3px solid transparent; transition: all 0.15s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid rgba(255,255,255,0.02); }
         .tree-item:hover { background: rgba(59, 130, 246, 0.1); color: #93c5fd; }
         .tree-item.active { background: rgba(59, 130, 246, 0.15); color: #ffffff; border-left-color: var(--accent-blue); font-weight: 600; }
         
-        .kpi-value { font-family: 'Courier New', Courier, monospace; font-weight: 700; letter-spacing: -0.5px; }
-        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.8; transition: 0.2s; }
-        input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+        .kpi-value { font-family: 'Courier New', Courier, monospace; font-weight: 700; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         select option { background-color: #1f2937; color: #ffffff; font-weight: bold; }
     
-        /* ===== Login layer ===== */
-        .login-shell {
-            min-height: 100vh;
-            background-color: var(--bg-base);
-            background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-base) 50%);
-        }
-        .login-panel {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-        }
-        .login-shell input:not([type="date"]):not([type="checkbox"]) {
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            color: white;
-            transition: all 0.2s;
-        }
-        .login-shell input:not([type="date"]):not([type="checkbox"]):focus {
-            border-color: var(--accent-blue);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
-            background-color: #111827;
-        }
-        .login-shell input[type="checkbox"] {
-            appearance: none;
-            background-color: #1f2937;
-            margin: 0;
-            display: grid;
-            place-content: center;
-            border: 1px solid #4b5563;
-        }
-        .login-shell input[type="checkbox"]::before {
-            content: "";
-            width: 0.65em;
-            height: 0.65em;
-            transform: scale(0);
-            transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em white;
-            background-color: white;
-            transform-origin: bottom left;
-            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-        }
+        .login-shell { min-height: 100vh; background-color: var(--bg-base); background-image: radial-gradient(circle at 50% -20%, #1e3a8a 0%, var(--bg-base) 50%); }
+        .login-panel { background-color: var(--bg-panel); border: 1px solid var(--border-color); }
+        .login-shell input:not([type="date"]):not([type="checkbox"]) { background-color: #1f2937; border: 1px solid #374151; color: white; transition: all 0.2s; }
+        .login-shell input:not([type="date"]):not([type="checkbox"]):focus { border-color: var(--accent-blue); outline: none; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); background-color: #111827; }
+        .login-shell input[type="checkbox"] { appearance: none; background-color: #1f2937; margin: 0; display: grid; place-content: center; border: 1px solid #4b5563; }
+        .login-shell input[type="checkbox"]::before { content: ""; width: 0.65em; height: 0.65em; transform: scale(0); transition: 120ms transform ease-in-out; box-shadow: inset 1em 1em white; background-color: white; transform-origin: bottom left; clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); }
         .login-shell input[type="checkbox"]:checked::before { transform: scale(1); }
-        .login-shell input[type="checkbox"]:checked {
-            background-color: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
+        .login-shell input[type="checkbox"]:checked { background-color: var(--accent-blue); border-color: var(--accent-blue); }
     </style>
 </head>
 <body class="overflow-hidden relative">
@@ -98,7 +59,7 @@
             <div class="hidden md:flex md:w-5/12 bg-gradient-to-br from-blue-900/80 to-[#0a0e17] p-10 flex-col justify-between relative overflow-hidden border-r border-[#1f2937]">
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-10">
-                        <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/LogoSystem.png" onerror="this.style.display='none'" alt="Data Analysis Logo" class="h-14 w-auto object-contain rounded-md shadow-lg">
+                        <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/LogoSystem.png" onerror="this.style.display='none'" alt="Data Analysis Logo" class="h-14 w-auto object-contain rounded-md shadow-lg bg-white p-1">
                         <div class="font-bold text-xs tracking-[0.2em] text-blue-200 uppercase">
                             THỦY ĐIỆN A VƯƠNG
                         </div>
@@ -114,7 +75,7 @@
                     </div>
                 </div>
                 <div class="relative z-10 text-[11px] text-blue-400/50 font-mono mt-12">
-                    Phiên bản V29.0 (GE Dashboard - Code Gốc)<br>
+                    Phiên bản V33.0 (OHT & OHD Advanced Analysis)<br>
                     Engine: Random Forest Regression
                 </div>
                 <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-600 rounded-full mix-blend-screen filter blur-[80px] opacity-30 animate-pulse"></div>
@@ -165,20 +126,8 @@
 
                     <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 px-4 rounded-lg transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] flex justify-center items-center gap-2 mt-4">
                         ĐĂNG NHẬP VÀO HỆ THỐNG
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </button>
                 </form>
-
-                <div class="mt-10 pt-6 border-t border-[#1f2937] flex items-center justify-between text-xs font-mono">
-                    <div class="flex items-center gap-2 text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="font-bold">Supabase: Online</span>
-                    </div>
-                    <div class="text-gray-500 flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        End-to-End Encrypted
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -222,24 +171,11 @@
             <div id="debug-log" class="text-xs font-mono text-gray-400 ml-2 hidden lg:block w-48 truncate text-right">Sẵn sàng</div>
             <div class="h-6 w-px bg-gray-700 mx-1"></div>
             
-            <button onclick="openOverhaulModal()" class="relative bg-amber-600 hover:bg-amber-700 px-4 py-1.5 text-[11px] font-bold text-white rounded transition shadow-lg flex items-center gap-2">
-                ⚡ ĐÁNH GIÁ ĐẠI TU
-            </button>
-
-            <button onclick="openDiagnostics()" class="relative bg-purple-600 hover:bg-purple-700 px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg flex items-center gap-2">
-                📋 CHẨN ĐOÁN
-                <span id="badge-diag" class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full hidden">0</span>
-            </button>
-
-            <button onclick="loadAllData()" id="btn-load" class="bg-[#2563eb] hover:bg-[#1d4ed8] px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg">
-                TẢI SỐ LIỆU (SYNC)
-            </button>
-            <button onclick="exportDiagPDF(true)" id="btn-pdf-main" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-1.5 text-[11px] font-bold text-white rounded transition border border-emerald-500/40">
-                🖨️ XUẤT BÁO CÁO GE
-            </button>
-            <button onclick="logoutDashboard()" class="bg-red-700 hover:bg-red-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-red-500/40">
-                ĐĂNG XUẤT
-            </button>
+            <button onclick="openOverhaulModal()" class="relative bg-amber-600 hover:bg-amber-700 px-4 py-1.5 text-[11px] font-bold text-white rounded transition shadow-lg">⚡ ĐÁNH GIÁ ĐẠI TU</button>
+            <button onclick="openDiagnostics()" class="relative bg-purple-600 hover:bg-purple-700 px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg">📋 CHẨN ĐOÁN<span id="badge-diag" class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-full hidden">0</span></button>
+            <button onclick="loadAllData()" id="btn-load" class="bg-[#2563eb] hover:bg-[#1d4ed8] px-4 py-1.5 text-[11px] font-medium text-white rounded transition shadow-lg">TẢI SỐ LIỆU (SYNC)</button>
+            <button onclick="exportDiagPDF(true)" id="btn-pdf-main" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-1.5 text-[11px] font-bold text-white rounded transition border border-emerald-500/40">🖨️ XUẤT BÁO CÁO GE</button>
+            <button onclick="logoutDashboard()" class="bg-red-700 hover:bg-red-600 px-4 py-1.5 text-[11px] font-medium text-white rounded transition border border-red-500/40">ĐĂNG XUẤT</button>
         </div>
     </header>
 
@@ -255,58 +191,23 @@
 
         <main class="flex-1 overflow-y-auto bg-[#0a0e17] p-4 relative" id="print-area-main">
             <div class="grid grid-cols-4 gap-3 mb-4">
-                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-blue-500">
-                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tổng điểm dữ liệu AI</div>
-                    <div class="text-2xl text-white kpi-value" id="kpi-total">--</div>
-                </div>
-                <div class="panel p-4 flex flex-col justify-center">
-                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Mô hình AI Active</div>
-                    <div class="text-2xl text-blue-400 kpi-value" id="kpi-models">--</div>
-                </div>
-                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-red-500">
-                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Cảnh báo Anomaly</div>
-                    <div class="text-2xl text-red-500 kpi-value" id="kpi-anomaly">--</div>
-                </div>
-                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-emerald-500">
-                    <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tỷ lệ tin cậy (Health)</div>
-                    <div class="text-2xl text-emerald-400 kpi-value" id="kpi-health">--%</div>
-                </div>
+                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-blue-500"><div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tổng điểm dữ liệu AI</div><div class="text-2xl text-white kpi-value" id="kpi-total">--</div></div>
+                <div class="panel p-4 flex flex-col justify-center"><div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Mô hình AI Active</div><div class="text-2xl text-blue-400 kpi-value" id="kpi-models">--</div></div>
+                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-red-500"><div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Cảnh báo Anomaly</div><div class="text-2xl text-red-500 kpi-value" id="kpi-anomaly">--</div></div>
+                <div class="panel p-4 flex flex-col justify-center border-l-4 border-l-emerald-500"><div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">Tỷ lệ tin cậy (Health)</div><div class="text-2xl text-emerald-400 kpi-value" id="kpi-health">--%</div></div>
             </div>
 
             <div class="panel flex flex-col h-[calc(100vh-180px)] min-h-[500px]">
                 <div class="p-3 border-b border-[#1f2937] bg-[#1f2937]/30 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-base font-bold text-white flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
-                            <span id="chart-tag-title">Vui lòng chọn thông số bên trái</span>
-                        </h2>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="text-right">
-                            <div class="text-[9px] text-gray-400 uppercase font-bold">Max Residual Peak</div>
-                            <div class="text-lg kpi-value text-amber-500" id="chart-max-res">--</div>
-                        </div>
-                    </div>
+                    <div><h2 class="text-base font-bold text-white flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 inline-block"></span><span id="chart-tag-title">Vui lòng chọn thông số bên trái</span></h2></div>
+                    <div class="text-right"><div class="text-[9px] text-gray-400 uppercase font-bold">Max Residual Peak</div><div class="text-lg kpi-value text-amber-500" id="chart-max-res">--</div></div>
                 </div>
-
                 <div class="flex-1 flex flex-col p-4 gap-2 relative">
-                    <div id="chart-loading" class="absolute inset-0 bg-[#111827]/80 backdrop-blur-sm z-10 hidden flex-col items-center justify-center">
-                        <div class="text-blue-500 mb-2 font-mono">Đang phân tích biểu đồ...</div>
-                    </div>
-
-                    <div class="flex-[3] relative border border-[#1f2937] rounded bg-[#0a0e17]">
-                        <div class="absolute top-2 left-3 z-10 text-[10px] font-bold text-gray-500 uppercase" id="title-main-chart">1. GIÁM SÁT ĐỘ LỆCH MÔ HÌNH AI (MODEL DEVIATION)</div>
-                        <div id="chart-main" class="h-full w-full"></div>
-                    </div>
-                    
+                    <div id="chart-loading" class="absolute inset-0 bg-[#111827]/80 backdrop-blur-sm z-10 hidden flex-col items-center justify-center"><div class="text-blue-500 mb-2 font-mono">Đang phân tích biểu đồ...</div></div>
+                    <div class="flex-[3] relative border border-[#1f2937] rounded bg-[#0a0e17]"><div class="absolute top-2 left-3 z-10 text-[10px] font-bold text-gray-500 uppercase" id="title-main-chart">1. GIÁM SÁT ĐỘ LỆCH MÔ HÌNH AI (MODEL DEVIATION)</div><div id="chart-main" class="h-full w-full"></div></div>
                     <div class="flex-[1.5] relative border border-[#1f2937] rounded bg-[#0a0e17]" id="res-container">
-                        <div id="res-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-[#0a0e17] bg-opacity-90 hidden">
-                            <span class="text-[11px] text-gray-400 font-bold tracking-widest border border-gray-600 bg-[#1f2937] px-4 py-1.5 rounded">CHỈ SỐ ĐỘC LẬP - KHÔNG ÁP DỤNG MÔ HÌNH AI</span>
-                        </div>
-                        <div class="absolute top-2 left-3 z-10 flex w-full pr-6 justify-between items-center text-[10px] font-bold text-gray-500 uppercase">
-                            <span>2. CHẨN ĐOÁN PHẦN DƯ (RESIDUAL DIAGNOSTICS)</span>
-                            <span class="text-red-400">Ngưỡng báo động: ±3.0</span>
-                        </div>
+                        <div id="res-overlay" class="absolute inset-0 z-20 flex items-center justify-center bg-[#0a0e17] bg-opacity-90 hidden"><span class="text-[11px] text-gray-400 font-bold tracking-widest border border-gray-600 bg-[#1f2937] px-4 py-1.5 rounded">CHỈ SỐ ĐỘC LẬP - KHÔNG ÁP DỤNG MÔ HÌNH AI</span></div>
+                        <div class="absolute top-2 left-3 z-10 flex w-full pr-6 justify-between items-center text-[10px] font-bold text-gray-500 uppercase"><span>2. CHẨN ĐOÁN PHẦN DƯ (RESIDUAL DIAGNOSTICS)</span><span class="text-red-400">Ngưỡng báo động: ±3.0</span></div>
                         <div id="chart-residual" class="h-full w-full"></div>
                     </div>
                 </div>
@@ -323,10 +224,7 @@
             <div class="flex-1 flex overflow-hidden p-4 gap-4">
                 <div class="w-[55%] flex flex-col border border-[#1f2937] rounded bg-[#0a0e17] relative">
                     <div class="p-3 border-b border-[#1f2937] flex justify-between items-center bg-[#1f2937]/50 gap-2 shrink-0">
-                        <select id="ovhUnit" class="bg-[#374151] text-xs text-white border border-[#4b5563] rounded px-3 py-1.5 font-bold outline-none cursor-pointer" onchange="renderRadar()">
-                            <option value="H1">TỔ MÁY H1</option>
-                            <option value="H2">TỔ MÁY H2</option>
-                        </select>
+                        <select id="ovhUnit" class="bg-[#374151] text-xs text-white border border-[#4b5563] rounded px-3 py-1.5 font-bold outline-none cursor-pointer" onchange="renderRadar()"><option value="H1">TỔ MÁY H1</option><option value="H2">TỔ MÁY H2</option></select>
                         <div class="text-[10px] font-bold text-gray-400">BIỂU ĐỒ BIẾN ĐỘNG (DELTA)</div>
                     </div>
                     <div class="relative w-full flex-1 block overflow-y-auto">
@@ -334,24 +232,12 @@
                         <div id="chart-radar" style="width: 100%;"></div>
                     </div>
                 </div>
-
                 <div class="w-[45%] border border-[#1f2937] rounded bg-[#0a0e17] overflow-hidden flex flex-col">
-                    <div class="p-2 border-b border-[#1f2937] bg-[#1f2937]/30 flex justify-between items-center shrink-0">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase">BẢNG CHI TIẾT ĐỘ LỆCH (°C / mm / ...)</span>
-                    </div>
+                    <div class="p-2 border-b border-[#1f2937] bg-[#1f2937]/30 flex justify-between items-center shrink-0"><span class="text-[10px] font-bold text-gray-400 uppercase">BẢNG CHI TIẾT ĐỘ LỆCH (°C / mm / ...)</span></div>
                     <div class="overflow-y-auto flex-1">
                         <table class="w-full text-left">
-                            <thead class="bg-[#1f2937] sticky top-0 z-10">
-                                <tr>
-                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Thiết bị</th>
-                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Baseline</th>
-                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Thực tế</th>
-                                    <th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Biến động</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ovhTableBody" class="text-xs">
-                                <tr><td colspan="4" class="text-center text-gray-500 italic py-8">Đang chờ dữ liệu...</td></tr>
-                            </tbody>
+                            <thead class="bg-[#1f2937] sticky top-0 z-10"><tr><th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Thiết bị</th><th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Baseline</th><th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Thực tế</th><th class="p-2 text-[10px] text-gray-400 uppercase font-bold border-b border-[#374151]">Biến động</th></tr></thead>
+                            <tbody id="ovhTableBody" class="text-xs"><tr><td colspan="4" class="text-center text-gray-500 italic py-8">Đang chờ dữ liệu...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -365,21 +251,15 @@
                 <h3 class="text-white font-bold flex items-center gap-2">📋 BÁO CÁO SỨC KHỎE TỔ MÁY & CHẨN ĐOÁN AI</h3>
                 <button onclick="closeDiagnostics()" class="text-gray-400 hover:text-white text-2xl leading-none">×</button>
             </div>
-            
             <div id="diagList" class="p-4 overflow-y-auto flex-1 flex flex-col gap-3"></div>
-            
             <div id="diagModalFooter" class="bg-[#1f2937]/50 p-3 flex justify-between items-center border-t border-[#374151]">
-                <button onclick="exportDiagPDF(false)" id="btn-diag-pdf" class="px-4 py-2 bg-[#059669] hover:bg-[#047857] text-white text-[11px] font-medium rounded transition flex items-center gap-2">
-                    🖨️ XUẤT BÁO CÁO GE
-                </button>
-                <button onclick="closeDiagnostics()" class="px-5 py-2 bg-gray-600 hover:bg-gray-500 text-white text-[11px] font-medium rounded transition">
-                    ĐÓNG LẠI
-                </button>
+                <button onclick="exportDiagPDF(false)" id="btn-diag-pdf" class="px-4 py-2 bg-[#059669] hover:bg-[#047857] text-white text-[11px] font-medium rounded transition flex items-center gap-2">🖨️ XUẤT BÁO CÁO GE</button>
+                <button onclick="closeDiagnostics()" class="px-5 py-2 bg-gray-600 hover:bg-gray-500 text-white text-[11px] font-medium rounded transition">ĐÓNG LẠI</button>
             </div>
         </div>
     </div>
 
-    <div id="hidden-render-zone" style="position: absolute; top: 0; left: -9999px; width: 1000px; background: white; z-index: -1;"></div>
+    <div id="hidden-render-zone" style="position: absolute; top: 0; left: -9999px; width: 850px; background: white; z-index: -1;"></div>
 
     <script>
         let dbClient = null;
@@ -388,7 +268,7 @@
         let rawTagsData = [];
         let tagCategories = {};
         let allDiagnosticsData = []; 
-        let summaryHtmlPrint = ""; 
+        let summaryHtmlPrint = "";
 
         const LOGIN_STORAGE_KEY = 'avc_apm_session_v1';
 
@@ -520,7 +400,6 @@
             return true;
         }
 
-        // TÍNH NĂNG MỚI: TẠO MA TRẬN TÓM TẮT SỨC KHỎE (SUBSYSTEM SUMMARY)
         function buildSubsystemSummary(diagsData) {
             let subCounts = {
                 'TỔ MÁY H1': { count: 0, maxSev: 'OK' },
@@ -545,10 +424,7 @@
                 }
             });
 
-            // HTML for Web Modal
             let webHtml = `<div class="mb-6"><h3 class="text-white text-[14px] font-bold border-b border-[#374151] pb-2 mb-3 tracking-wide uppercase">I. MA TRẬN SỨC KHỎE PHÂN HỆ</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-3">`;
-            
-            // HTML for PDF Print (Dùng inline style thay vì Tailwind để lúc in PDF không bị mất màu)
             summaryHtmlPrint = `<div style="display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">`;
 
             for(let sys in subCounts) {
@@ -695,7 +571,7 @@
 
 
         // =======================================================================================
-        // HELPER FUNCTIONS ĐỂ CHUẨN BỊ DỮ LIỆU IN PDF (Tích hợp Auto-Interpolate từ Web)
+        // HELPER FUNCTIONS ĐỂ CHUẨN BỊ DỮ LIỆU IN PDF 
         // =======================================================================================
         
         async function renderChartToBase64(options, containerId) {
@@ -766,11 +642,14 @@
             return [optP, optN, optQ];
         }
 
-        function getTempGroupChartConfig(labels, aData, bData, cData) {
+        function getTempGroupChartConfig(labels, aData, bData, cData, sNames = ['Pha A', 'Pha B', 'Pha C']) {
+            let s = [];
+            if(aData && aData.length) s.push({ name: sNames[0], data: aData });
+            if(bData && bData.length) s.push({ name: sNames[1], data: bData });
+            if(cData && cData.length) s.push({ name: sNames[2], data: cData });
+
             return {
-                series: [
-                    { name: 'Pha A', data: aData }, { name: 'Pha B', data: bData }, { name: 'Pha C', data: cData }
-                ],
+                series: s,
                 chart: { type: 'line', height: 250, width: 950, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
                 colors: ['#dc2626', '#d97706', '#2563eb'],
                 stroke: { width: 2, curve: 'smooth' },
@@ -782,9 +661,66 @@
             };
         }
 
+        function getGeneratorBearingChartConfig(labels, smOht, oilOht, smOhd, oilOhd) {
+            return {
+                series: [
+                    { name: 'Sécmăng OHT', data: smOht },
+                    { name: 'Dầu OHT', data: oilOht },
+                    { name: 'Sécmăng OHD', data: smOhd },
+                    { name: 'Dầu OHD', data: oilOhd }
+                ],
+                chart: { type: 'line', height: 250, width: 950, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
+                colors: ['#dc2626', '#f97316', '#2563eb', '#06b6d4'],
+                stroke: { width: 2, curve: 'smooth', dashArray: [0, 4, 0, 4] },
+                xaxis: { categories: labels, tickAmount: 10, labels: { rotate: -45, style: { fontSize: '9px', colors: '#000' } } },
+                yaxis: { title: { text: 'Nhiệt độ [°C]', style: { fontSize: '10px', color: '#000' } }, labels: { style: { colors: '#000' }, formatter: val => val!==null?val.toFixed(1):'' } },
+                grid: { borderColor: '#e5e7eb' },
+                dataLabels: { enabled: false },
+                legend: { position: 'top', fontSize: '12px' }
+            };
+        }
+
+        function getVibLoadChartConfig(labels, vibData, loadData) {
+            return {
+                series: [
+                    { name: 'Độ rung OHT (mm/s)', type: 'line', data: vibData },
+                    { name: 'Công suất P (MW)', type: 'area', data: loadData }
+                ],
+                chart: { type: 'line', height: 250, width: 950, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
+                colors: ['#ef4444', '#3b82f6'],
+                stroke: { width: [2, 0], curve: ['smooth', 'stepline'] },
+                fill: { type: ['solid', 'solid'], opacity: [1, 0.15] },
+                xaxis: { categories: labels, tickAmount: 10, labels: { rotate: -45, style: { fontSize: '9px', colors: '#000' } } },
+                yaxis: [
+                    { title: { text: 'Rung [mm/s]', style: {color: '#000'} }, min: 0, labels: { style: {colors: '#000'}, formatter: v => v!==null?v.toFixed(2):'' } },
+                    { opposite: true, title: { text: 'Công suất [MW]', style: {color: '#000'} }, min: 0, labels: { style: {colors: '#000'}, formatter: v => v!==null?v.toFixed(0):'' } }
+                ],
+                dataLabels: { enabled: false }, legend: { position: 'top', fontSize: '12px' }
+            };
+        }
+
+        function getCoolingChartConfig(labels, pData, fData, tData) {
+             return {
+                series: [
+                    { name: 'Áp lực (bar)', type: 'line', data: pData },
+                    { name: 'Lưu lượng (l/p)', type: 'line', data: fData },
+                    { name: 'Nhiệt độ nước (°C)', type: 'line', data: tData }
+                ],
+                chart: { type: 'line', height: 250, width: 950, animations: { enabled: false }, toolbar: { show: false }, background: '#fff' },
+                colors: ['#f59e0b', '#06b6d4', '#dc2626'],
+                stroke: { width: [2, 2, 2], curve: 'smooth' },
+                xaxis: { categories: labels, tickAmount: 10, labels: { rotate: -45, style: { fontSize: '9px', colors: '#000' } } },
+                yaxis: [
+                    { title: { text: 'Áp lực', style: {color: '#000'} }, labels: { style: {colors: '#000'}, formatter: v => v!==null?v.toFixed(1):'' } },
+                    { opposite: true, title: { text: 'Lưu lượng', style: {color: '#000'} }, labels: { style: {colors: '#000'}, formatter: v => v!==null?v.toFixed(0):'' } },
+                    { opposite: true, title: { text: 'Nhiệt độ', style: {color: '#000'} }, labels: { style: {colors: '#000'}, formatter: v => v!==null?v.toFixed(1):'' } }
+                ],
+                dataLabels: { enabled: false }, legend: { position: 'top', fontSize: '12px' }
+            };
+        }
 
         // =======================================================================================
-        // PHƯƠNG PHÁP XUẤT PDF MỚI (BẢN V29 + FIX LỖI API 1000 ROWS + AUTO-ZERO)
+        // PHƯƠNG PHÁP XUẤT PDF MỚI (BẢN V33 - FULL 5 CHART MỖI TỔ MÁY & OHT/OHD)
         // =======================================================================================
         async function exportDiagPDF(isQuickPrint = false) {
             const btn = isQuickPrint ? document.getElementById('btn-pdf-main') : document.getElementById('btn-diag-pdf');
@@ -804,18 +740,34 @@
                 tempZone.innerHTML = ''; 
 
                 // ==========================================================
-                // PHẦN 1: BATCH FETCH & RENDER OPERATION OVERVIEW
+                // PHẦN 1: BATCH FETCH & RENDER OPERATION & HEALTH PROFILE
                 // ==========================================================
-                btn.innerHTML = '⏳ ĐANG TỔNG HỢP TOÀN CẢNH VẬN HÀNH...';
+                btn.innerHTML = '⏳ ĐANG KÉO DỮ LIỆU TỪ DB...';
                 const overviewTags = [
+                    // Operation
                     "H1 - MF-P", "H1 - MF-Q", "H1 - MF-n", "H1 - Tuabin - Tốc độ",
                     "H2 - MF-P", "H2 - MF-Q", "H2 - MF-n", "H2 - Tuabin - Tốc độ",
                     "Nhiệt độ TU-C24B pha A", "Nhiệt độ TU-C24B pha B", "Nhiệt độ TU-C24B pha C",
-                    "TE1 - Nhiệt độ pha A", "TE1 - Nhiệt độ pha B", "TE1 - Nhiệt độ pha C"
+                    "TE1 - Nhiệt độ pha A", "TE1 - Nhiệt độ pha B", "TE1 - Nhiệt độ pha C",
+                    
+                    // H1 Health Profile (Sửa OHT/OHD Generator Bearings)
+                    "H1 - Nhiệt độ các ổ, gió - SM OHT", "H1 - Nhiệt độ các ổ, gió - Dầu OHT",
+                    "H1 - Nhiệt độ các ổ, gió - SM OHD", "H1 - Nhiệt độ các ổ, gió - Dầu OHD",
+                    "H1 - Nhiệt độ cuộn dây Stator - A1", "H1 - Nhiệt độ cuộn dây Stator - B1", "H1 - Nhiệt độ cuộn dây Stator - C1",
+                    "H1 - MF-OHT-rung",
+                    "H1 - NKT - Áp lực nước buồng xoắn", "H1 - NKT - Lưu lượng nước làm mát gió MF", "H1 - NKT - Nhiệt độ nước đầu vào ống góp tổ máy",
+                    "H1 - MBA T1 - Nhiệt độ cuộn dây", "H1 - MBA T1 - Nhiệt độ dầu",
+                    
+                    // H2 Health Profile (Sửa OHT/OHD Generator Bearings)
+                    "H2 - Nhiệt độ các ổ, gió - SM OHT", "H2 - Nhiệt độ các ổ, gió - Dầu OHT",
+                    "H2 - Nhiệt độ các ổ, gió - SM OHD", "H2 - Nhiệt độ các ổ, gió - Dầu OHD",
+                    "H2 - Nhiệt độ cuộn dây Stator - A1", "H2 - Nhiệt độ cuộn dây Stator - B1", "H2 - Nhiệt độ cuộn dây Stator - C1",
+                    "H2 - MF-OHT-rung",
+                    "H2 - NKT - Áp lực nước buồng xoắn", "H2 - NKT - Lưu lượng nước làm mát gió MF", "H2 - NKT - Nhiệt độ nước đầu vào ống góp tổ máy",
+                    "H2 - MBA T2 - Nhiệt độ cuộn dây", "H2 - MBA T2 - Nhiệt độ dầu"
                 ];
 
                 let rawDataMap = {};
-                // Tránh lỗi timezone JS khi khởi tạo Date
                 let dCurr = new Date(sD_raw);
                 while (dCurr <= new Date(eD_raw)) {
                     let y = dCurr.getFullYear();
@@ -830,7 +782,6 @@
                     dCurr.setDate(dCurr.getDate() + 1);
                 }
 
-                // Sửa lỗi Pagination: Hạ step xuống 1000 để Supabase không chặn query
                 let from = 0; const step = 1000; let fetchMore = true;
                 while(fetchMore) {
                     const { data: batchData, error } = await dbClient.from('op_predicted_metrics')
@@ -841,7 +792,6 @@
                     if (batchData && batchData.length > 0) {
                         batchData.forEach(r => {
                             let hNum = parseInt(r.time_mark.replace(/\D/g, '')) || 0;
-                            // Đảm bảo mapping đúng key
                             let repDate = r.op_daily_reports.report_date; 
                             let k = `${repDate}_${hNum.toString().padStart(2, '0')}`;
                             if (rawDataMap[k]) rawDataMap[k].vals[r.tag_name] = r.actual_value;
@@ -851,33 +801,54 @@
                 }
 
                 let ovLabels = [], h1P = [], h1Q = [], h1N = [], h2P = [], h2Q = [], h2N = [], tuA = [], tuB = [], tuC = [], teA = [], teB = [], teC = [];
+                let h1SmOht = [], h1OilOht = [], h1SmOhd = [], h1OilOhd = [], h1StatA1 = [], h1StatB1 = [], h1StatC1 = [], h1Vib = [], h1NktPress = [], h1NktFlow = [], h1NktTemp = [], h1MbaWinding = [], h1MbaOil = [];
+                let h2SmOht = [], h2OilOht = [], h2SmOhd = [], h2OilOhd = [], h2StatA1 = [], h2StatB1 = [], h2StatC1 = [], h2Vib = [], h2NktPress = [], h2NktFlow = [], h2NktTemp = [], h2MbaWinding = [], h2MbaOil = [];
+
                 Object.keys(rawDataMap).sort().forEach(k => {
                     let d = rawDataMap[k].vals;
                     ovLabels.push(rawDataMap[k].label);
                     
-                    // Cơ chế Fill số 0 cho P,Q,N giống hệt bản Dashboard Web
-                    h1P.push(d['H1 - MF-P'] ?? 0); 
-                    h1Q.push(d['H1 - MF-Q'] ?? 0); 
-                    h1N.push(d['H1 - Tuabin - Tốc độ'] ?? d['H1 - MF-n'] ?? 0);
-                    
-                    h2P.push(d['H2 - MF-P'] ?? 0); 
-                    h2Q.push(d['H2 - MF-Q'] ?? 0); 
-                    h2N.push(d['H2 - Tuabin - Tốc độ'] ?? d['H2 - MF-n'] ?? 0);
-                    
-                    tuA.push(d['Nhiệt độ TU-C24B pha A'] ?? null); 
-                    tuB.push(d['Nhiệt độ TU-C24B pha B'] ?? null); 
-                    tuC.push(d['Nhiệt độ TU-C24B pha C'] ?? null);
-                    
-                    teA.push(d['TE1 - Nhiệt độ pha A'] ?? null); 
-                    teB.push(d['TE1 - Nhiệt độ pha B'] ?? null); 
-                    teC.push(d['TE1 - Nhiệt độ pha C'] ?? null);
+                    // Operation
+                    h1P.push(d['H1 - MF-P'] ?? 0); h1Q.push(d['H1 - MF-Q'] ?? 0); h1N.push(d['H1 - Tuabin - Tốc độ'] ?? d['H1 - MF-n'] ?? 0);
+                    h2P.push(d['H2 - MF-P'] ?? 0); h2Q.push(d['H2 - MF-Q'] ?? 0); h2N.push(d['H2 - Tuabin - Tốc độ'] ?? d['H2 - MF-n'] ?? 0);
+                    tuA.push(d['Nhiệt độ TU-C24B pha A'] ?? null); tuB.push(d['Nhiệt độ TU-C24B pha B'] ?? null); tuC.push(d['Nhiệt độ TU-C24B pha C'] ?? null);
+                    teA.push(d['TE1 - Nhiệt độ pha A'] ?? null); teB.push(d['TE1 - Nhiệt độ pha B'] ?? null); teC.push(d['TE1 - Nhiệt độ pha C'] ?? null);
+
+                    // H1 Health
+                    h1SmOht.push(d['H1 - Nhiệt độ các ổ, gió - SM OHT'] ?? null); h1OilOht.push(d['H1 - Nhiệt độ các ổ, gió - Dầu OHT'] ?? null);
+                    h1SmOhd.push(d['H1 - Nhiệt độ các ổ, gió - SM OHD'] ?? null); h1OilOhd.push(d['H1 - Nhiệt độ các ổ, gió - Dầu OHD'] ?? null);
+                    h1StatA1.push(d['H1 - Nhiệt độ cuộn dây Stator - A1'] ?? null); h1StatB1.push(d['H1 - Nhiệt độ cuộn dây Stator - B1'] ?? null); h1StatC1.push(d['H1 - Nhiệt độ cuộn dây Stator - C1'] ?? null);
+                    h1Vib.push(d['H1 - MF-OHT-rung'] ?? null);
+                    h1NktPress.push(d['H1 - NKT - Áp lực nước buồng xoắn'] ?? null); h1NktFlow.push(d['H1 - NKT - Lưu lượng nước làm mát gió MF'] ?? null); h1NktTemp.push(d['H1 - NKT - Nhiệt độ nước đầu vào ống góp tổ máy'] ?? null);
+                    h1MbaWinding.push(d['H1 - MBA T1 - Nhiệt độ cuộn dây'] ?? null); h1MbaOil.push(d['H1 - MBA T1 - Nhiệt độ dầu'] ?? null);
+
+                    // H2 Health
+                    h2SmOht.push(d['H2 - Nhiệt độ các ổ, gió - SM OHT'] ?? null); h2OilOht.push(d['H2 - Nhiệt độ các ổ, gió - Dầu OHT'] ?? null);
+                    h2SmOhd.push(d['H2 - Nhiệt độ các ổ, gió - SM OHD'] ?? null); h2OilOhd.push(d['H2 - Nhiệt độ các ổ, gió - Dầu OHD'] ?? null);
+                    h2StatA1.push(d['H2 - Nhiệt độ cuộn dây Stator - A1'] ?? null); h2StatB1.push(d['H2 - Nhiệt độ cuộn dây Stator - B1'] ?? null); h2StatC1.push(d['H2 - Nhiệt độ cuộn dây Stator - C1'] ?? null);
+                    h2Vib.push(d['H2 - MF-OHT-rung'] ?? null);
+                    h2NktPress.push(d['H2 - NKT - Áp lực nước buồng xoắn'] ?? null); h2NktFlow.push(d['H2 - NKT - Lưu lượng nước làm mát gió MF'] ?? null); h2NktTemp.push(d['H2 - NKT - Nhiệt độ nước đầu vào ống góp tổ máy'] ?? null);
+                    h2MbaWinding.push(d['H2 - MBA T2 - Nhiệt độ cuộn dây'] ?? null); h2MbaOil.push(d['H2 - MBA T2 - Nhiệt độ dầu'] ?? null);
                 });
 
-                // Nội suy liền mạch mảng nhiệt độ
+                // Nội suy làm mượt đường
                 tuA = interpolateArray(tuA); tuB = interpolateArray(tuB); tuC = interpolateArray(tuC);
                 teA = interpolateArray(teA); teB = interpolateArray(teB); teC = interpolateArray(teC);
+                
+                h1SmOht = interpolateArray(h1SmOht); h1OilOht = interpolateArray(h1OilOht); h1SmOhd = interpolateArray(h1SmOhd); h1OilOhd = interpolateArray(h1OilOhd);
+                h1StatA1 = interpolateArray(h1StatA1); h1StatB1 = interpolateArray(h1StatB1); h1StatC1 = interpolateArray(h1StatC1);
+                h1Vib = interpolateArray(h1Vib);
+                h1NktPress = interpolateArray(h1NktPress); h1NktFlow = interpolateArray(h1NktFlow); h1NktTemp = interpolateArray(h1NktTemp);
+                h1MbaWinding = interpolateArray(h1MbaWinding); h1MbaOil = interpolateArray(h1MbaOil);
 
-                btn.innerHTML = '⏳ ĐANG VẼ BIỂU ĐỒ STACKED (GE STYLE)...';
+                h2SmOht = interpolateArray(h2SmOht); h2OilOht = interpolateArray(h2OilOht); h2SmOhd = interpolateArray(h2SmOhd); h2OilOhd = interpolateArray(h2OilOhd);
+                h2StatA1 = interpolateArray(h2StatA1); h2StatB1 = interpolateArray(h2StatB1); h2StatC1 = interpolateArray(h2StatC1);
+                h2Vib = interpolateArray(h2Vib);
+                h2NktPress = interpolateArray(h2NktPress); h2NktFlow = interpolateArray(h2NktFlow); h2NktTemp = interpolateArray(h2NktTemp);
+                h2MbaWinding = interpolateArray(h2MbaWinding); h2MbaOil = interpolateArray(h2MbaOil);
+
+                // ================== SECTION 1: OPERATION OVERVIEW ==================
+                btn.innerHTML = '⏳ ĐANG VẼ BIỂU ĐỒ TOÀN CẢNH (OVERVIEW)...';
                 let overviewChartImagesHtml = '';
                 
                 const cfgsH1 = getGEStackedChartConfig(ovLabels, h1P, h1Q, h1N);
@@ -901,8 +872,77 @@
                 overviewChartImagesHtml += `<div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;"><div style="background:#4b5563; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">NHIỆT ĐỘ THANH DẪN DÒNG (Đại diện: TE1)</div><img src="${imgTE}" style="display:block; width:100%;" /></div>`;
 
 
+                // ================== SECTION 2: EQUIPMENT HEALTH PROFILE ==================
+                btn.innerHTML = '⏳ ĐANG VẼ CHI TIẾT SỨC KHỎE TỔ MÁY (H1 & H2)...';
+                
+                // Vẽ ảnh H1
+                const imgH1VibLoad = await renderChartToBase64(getVibLoadChartConfig(ovLabels, h1Vib, h1P), 'hidden-render-zone');
+                const imgH1Bearing = await renderChartToBase64(getGeneratorBearingChartConfig(ovLabels, h1SmOht, h1OilOht, h1SmOhd, h1OilOhd), 'hidden-render-zone');
+                const imgH1Stator = await renderChartToBase64(getTempGroupChartConfig(ovLabels, h1StatA1, h1StatB1, h1StatC1, ['Cuộn dây A1', 'Cuộn dây B1', 'Cuộn dây C1']), 'hidden-render-zone');
+                const imgH1Cooling = await renderChartToBase64(getCoolingChartConfig(ovLabels, h1NktPress, h1NktFlow, h1NktTemp), 'hidden-render-zone');
+                const imgH1Mba = await renderChartToBase64(getTempGroupChartConfig(ovLabels, h1MbaWinding, h1MbaOil, [], ['Nhiệt độ Cuộn dây', 'Nhiệt độ Dầu', '']), 'hidden-render-zone');
+
+                // Vẽ ảnh H2
+                const imgH2VibLoad = await renderChartToBase64(getVibLoadChartConfig(ovLabels, h2Vib, h2P), 'hidden-render-zone');
+                const imgH2Bearing = await renderChartToBase64(getGeneratorBearingChartConfig(ovLabels, h2SmOht, h2OilOht, h2SmOhd, h2OilOhd), 'hidden-render-zone');
+                const imgH2Stator = await renderChartToBase64(getTempGroupChartConfig(ovLabels, h2StatA1, h2StatB1, h2StatC1, ['Cuộn dây A1', 'Cuộn dây B1', 'Cuộn dây C1']), 'hidden-render-zone');
+                const imgH2Cooling = await renderChartToBase64(getCoolingChartConfig(ovLabels, h2NktPress, h2NktFlow, h2NktTemp), 'hidden-render-zone');
+                const imgH2Mba = await renderChartToBase64(getTempGroupChartConfig(ovLabels, h2MbaWinding, h2MbaOil, [], ['Nhiệt độ Cuộn dây', 'Nhiệt độ Dầu', '']), 'hidden-render-zone');
+
+                let healthProfileHtml = `
+                    <div style="page-break-before: always;"></div>
+                    <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">II. CHI TIẾT SỨC KHỎE TỔ MÁY (EQUIPMENT HEALTH PROFILE)</h3>
+                    <div style="font-size:12px; font-style:italic; color:#666; margin-bottom:15px;">* Các biểu đồ phân tích tương quan chuyên sâu giữa các hệ thống cốt lõi trong cụm sinh công (Tổ máy H1 & H2).</div>
+
+                    <h4 style="font-size: 14px; font-weight: bold; color: #1e3a8a; margin-top: 20px; margin-bottom: 10px;">A. TỔ MÁY H1 (UNIT 1)</h4>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">1. TƯƠNG QUAN RUNG ĐỘNG VÀ PHỤ TẢI (VIBRATION VS LOAD)</div>
+                        <img src="${imgH1VibLoad}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">2. NHIỆT ĐỘ CỤM Ổ HƯỚNG MÁY PHÁT (UPPER & LOWER GUIDE BEARINGS)</div>
+                        <img src="${imgH1Bearing}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">3. CÂN BẰNG NHIỆT CUỘN DÂY STATOR (STATOR WINDING)</div>
+                        <img src="${imgH1Stator}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">4. HIỆU SUẤT HỆ THỐNG NƯỚC LÀM MÁT (NKT - COOLING SYSTEM)</div>
+                        <img src="${imgH1Cooling}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">5. NHIỆT ĐỘ MÁY BIẾN ÁP T1 (T1 TRANSFORMER TEMP)</div>
+                        <img src="${imgH1Mba}" style="display:block; width:100%;" />
+                    </div>
+
+                    <div style="page-break-before: always;"></div>
+                    <h4 style="font-size: 14px; font-weight: bold; color: #1e3a8a; margin-top: 30px; margin-bottom: 10px;">B. TỔ MÁY H2 (UNIT 2)</h4>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">1. TƯƠNG QUAN RUNG ĐỘNG VÀ PHỤ TẢI (VIBRATION VS LOAD)</div>
+                        <img src="${imgH2VibLoad}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">2. NHIỆT ĐỘ CỤM Ổ HƯỚNG MÁY PHÁT (UPPER & LOWER GUIDE BEARINGS)</div>
+                        <img src="${imgH2Bearing}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">3. CÂN BẰNG NHIỆT CUỘN DÂY STATOR (STATOR WINDING)</div>
+                        <img src="${imgH2Stator}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">4. HIỆU SUẤT HỆ THỐNG NƯỚC LÀM MÁT (NKT - COOLING SYSTEM)</div>
+                        <img src="${imgH2Cooling}" style="display:block; width:100%;" />
+                    </div>
+                    <div style="border: 1px solid #000; margin-bottom: 20px; page-break-inside: avoid;">
+                        <div style="background:#0f766e; color:#fff; font-weight:bold; padding: 5px 10px; font-size:12px;">5. NHIỆT ĐỘ MÁY BIẾN ÁP T2 (T2 TRANSFORMER TEMP)</div>
+                        <img src="${imgH2Mba}" style="display:block; width:100%;" />
+                    </div>
+                `;
+
+
                 // ==========================================================
-                // PHẦN 2: LÕI XỬ LÝ EVIDENCES 
+                // PHẦN 3 & 4 & 5: MATRIX, EVENTS, EVIDENCES
                 // ==========================================================
                 let tagsToDrawMap = new Map();
                 allDiagnosticsData.forEach(d => {
@@ -926,7 +966,7 @@
 
                 if(tagsArray.length > 0) {
                     chartImagesHtml += `<div style="page-break-before: always; margin-top: 30px;"></div>`; 
-                    chartImagesHtml += `<h3 style="font-size: 16px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 17px; text-transform: uppercase;">IV. BIỂU ĐỒ CHỨNG MINH LỖI (EVIDENCES)</h3>`;
+                    chartImagesHtml += `<h3 style="font-size: 16px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 17px; text-transform: uppercase;">V. BIỂU ĐỒ CHỨNG MINH LỖI (EVIDENCES)</h3>`;
                     chartImagesHtml += `<p style="font-size: 12px; font-style: italic; color: #555; margin-bottom: 20px;">* Vùng bôi đỏ là thời điểm phát hiện bất thường. Đường xanh lá (AI) vs Đường đỏ (Thực tế).</p>`;
                 }
 
@@ -953,7 +993,6 @@
                         let act = cleanData.map(d => d.actual_value);
                         let est = cleanData.map(d => d.estimated_value);
 
-                        // Kế thừa thuật toán Zeroing/Interpolate chuẩn của V25 để chống đứt nét
                         let tLow = tag.toLowerCase();
                         let isIndependent = tLow.includes('mf-p') || tLow.includes('mf-q') || tLow.includes('tốc độ') || 
                                             tLow.includes('điện áp') || tLow.includes('mf-u') || tLow.includes('mf-i') || 
@@ -1088,7 +1127,7 @@
                     </head>
                     <body>
                         <div style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 0;">
-                            <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/WaterMark.png" onerror="this.style.display='none'" style="width: 68%; max-width: 760px; opacity: 0.055;" />
+                            <img src="https://raw.githubusercontent.com/thongsovanhanhavhpc-commits/DataAnalysisAVC/main/asset/WaterMark.png" onerror="this.style.display='none'" style="width: 70%; max-width: 780px; opacity: 0.085;" />
                         </div>
                         <div style="position: relative; z-index: 1;">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
@@ -1114,12 +1153,14 @@
                         <div style="font-size:12px; font-style:italic; color:#666; margin-bottom:15px;">* Biểu đồ thể hiện sự tương quan trực tiếp giữa Công suất phát, Tốc độ tuabin và các thông số Đo lường/Thanh dẫn dòng trong tháng.</div>
                         ${overviewChartImagesHtml}
 
+                        ${healthProfileHtml}
+
                         <div style="page-break-before: always;"></div>
 
-                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">II. MA TRẬN SỨC KHỎE TỔNG THỂ</h3>
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">III. MA TRẬN SỨC KHỎE TỔNG THỂ</h3>
                         ${summaryHtmlPrint}
 
-                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">III. DANH SÁCH SỰ KIỆN CHI TIẾT</h3>
+                        <h3 style="font-size: 17px; font-weight: bold; color: #000; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase;">IV. DANH SÁCH SỰ KIỆN CHI TIẾT</h3>
                         ${eventListHtml}
                         
                         ${chartImagesHtml}
@@ -1291,7 +1332,6 @@
                 }
 
                 let cleanMap = {};
-                // Sửa lỗi timezone khởi tạo Date
                 let dCurr = new Date(startDate);
                 while (dCurr <= new Date(endDate)) {
                     let y = dCurr.getFullYear();
